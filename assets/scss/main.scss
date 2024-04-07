@@ -1,0 +1,25 @@
+$heading-color: #254935;
+$intro-color: #666;
+
+main {
+  width: 80%;
+  margin: 4rem auto 0;
+}
+
+h1 {
+  font-size: 2rem;
+  color: $heading-color;
+  margin-bottom: 0.5rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  color: $heading-color;
+  margin-bottom: 0.5rem;
+}
+
+.intro {
+  font-size: 1rem;
+  color: $intro-color;
+  line-height: 1.4;
+}
