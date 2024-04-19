@@ -7,7 +7,8 @@
       <p class="intro">Your helper for arranging group carpools!</p>
     </div>
     <AddressForm />
-    <Map class="map" />
+    <MapTraditional class="map" />
+    <!-- <MapWithPackage class="map" /> -->
   </div>
 </template>
 

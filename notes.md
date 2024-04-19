@@ -1,3 +1,6 @@
+# TODOs
+as soon as one route is added, the map responsiveness decreases significantly -> improve
+
 # routing
 done automatically through page names
 
