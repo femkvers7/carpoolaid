@@ -16,7 +16,7 @@ const homeMapStore = useHomeMapStore();
 
 mapboxgl.accessToken = MAPBOX_API_KEY;
 
-const { mapInstance, destinationGeoJSON, carpoolGeoJSON, routeGeoJSON } =
+const { mapInstance, markersGeoJSON, routesGeoJSON } =
   storeToRefs(homeMapStore);
 
 onMounted(() => {
@@ -25,58 +25,84 @@ onMounted(() => {
     style: "mapbox://styles/mapbox/streets-v11",
     center: [4.266714, 50.964028],
     zoom: 8,
+    language: "nl",
   });
 
   mapInstance.value = map;
 
   map.on("load", () => {
-    map.addSource("destination", {
+    map.addSource("routes", {
       type: "geojson",
-      data: destinationGeoJSON.value,
+      data: routesGeoJSON.value,
     });
     map.addLayer({
-      id: "destination",
-      type: "symbol",
-      source: "destination",
-      layout: {
-        "icon-image": "marker-15",
-        "icon-size": 3,
-        "icon-allow-overlap": true,
-      },
-    });
-
-    map.addSource("carpool", {
-      type: "geojson",
-      data: carpoolGeoJSON.value,
-    });
-    map.addLayer({
-      id: "carpool",
-      type: "symbol",
-      source: "carpool",
-      layout: {
-        "icon-image": "marker-15",
-        "icon-size": 2,
-        "icon-allow-overlap": true,
-      },
-    });
-
-    map.addSource("route", {
-      type: "geojson",
-      data: routeGeoJSON.value,
-    });
-    map.addLayer({
-      id: "route",
+      id: "routes",
       type: "line",
-      source: "route",
+      source: "routes",
       layout: {
         "line-join": "round",
         "line-cap": "round",
       },
       paint: {
-        "line-color": "#888",
-        "line-width": 8,
+        "line-color": "#008170",
+        "line-width": 5,
+        "line-opacity": 0.75,
       },
     });
+
+    map.addSource("markers", {
+      type: "geojson",
+      data: markersGeoJSON.value,
+    });
+    map.addLayer({
+      id: "markers",
+      type: "circle",
+      source: "markers",
+      paint: {
+        "circle-color": [
+          "match",
+          ["get", "type"],
+          "destination",
+          "#01584D",
+          "carpool",
+          "#6C6D74",
+          "#ffffff",
+        ],
+        "circle-radius": 6,
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#ffffff",
+        "circle-opacity": 0.75,
+      },
+    });
+  });
+
+  // Create a popup, but don't add it to the map yet.
+  const popup = new mapboxgl.Popup({
+    closeButton: false,
+    closeOnClick: false,
+  });
+
+  map.on("mouseenter", "markers", (e: mapboxgl.EventData) => {
+    map.getCanvas().style.cursor = "pointer";
+
+    const coordinates = e.features[0].geometry.coordinates.slice();
+    const title = e.features[0].properties.title;
+    const description = e.features[0].properties.description;
+
+    popup
+      .setLngLat(coordinates)
+      .setHTML(
+        `
+          <h2>${title}</h2>
+          <p>${description}</p>
+        `,
+      )
+      .addTo(map);
+  });
+
+  map.on("mouseleave", "markers", () => {
+    map.getCanvas().style.cursor = "";
+    popup.remove();
   });
 });
 </script>

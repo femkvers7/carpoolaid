@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useHomeMapStore } from "~/stores/maps/home";
 import type { Location, LocationContext } from "~/types/Location";
-import type { GeoJson } from "~/types/Routes";
 
 useHead({
   script: [
@@ -15,15 +14,15 @@ useHead({
 
 const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
 const homeMapStore = useHomeMapStore();
+const editDestination = ref<boolean>(false);
 
 const {
   destinationLocation,
   carpoolLocations,
   routes,
   mapInstance,
-  destinationGeoJSON,
-  carpoolGeoJSON,
-  routeGeoJSON,
+  markersGeoJSON,
+  routesGeoJSON,
 } = storeToRefs(homeMapStore);
 
 const onRetrieveDestinationLocation = (event: any) => {
@@ -35,10 +34,15 @@ const onRetrieveDestinationLocation = (event: any) => {
 
   destinationLocation.value = destination;
 
-  mapInstance.value.getSource("destination").setData(destinationGeoJSON.value);
+  mapInstance.value.getSource("markers").setData(markersGeoJSON.value);
 };
 
-const onRetrieveCarpoolLocation = (event: any) => {
+const onRetrieveCarpoolLocation = async (event: any) => {
+  if (!destinationLocation.value) {
+    window.alert("Please select a destination first.");
+    return;
+  }
+
   const coordinates = event.detail.features[0].geometry.coordinates as number[];
   const carpoolLocation: Location = {
     coordinates: coordinates,
@@ -48,27 +52,43 @@ const onRetrieveCarpoolLocation = (event: any) => {
 
   carpoolLocations.value.push(carpoolLocation);
 
-  console.log(carpoolGeoJSON.value, "carpoolGeoJSON");
-
-  mapInstance.value.getSource("carpool").setData(carpoolGeoJSON.value);
+  mapInstance.value.getSource("markers").setData(markersGeoJSON.value);
 
   // compute route
-  if (destinationLocation) {
-    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates[0]},${coordinates[1]};${destinationLocation.value!.coordinates[0]},${destinationLocation.value!.coordinates[1]}?geometries=geojson&access_token=${MAPBOX_API_KEY}`;
-    getRoute(url);
-    console.log("routes", routes);
+  if (destinationLocation.value) {
+    const route = await getRoute(
+      carpoolLocation.coordinates,
+      destinationLocation.value!.coordinates,
+    );
+
+    routes.value.push(route);
+    mapInstance.value.getSource("routes").setData(routesGeoJSON.value);
   }
 };
 
-const getRoute = async (url: string) => {
+const getRoute = async (
+  carpoolCoords: number[],
+  destinationCoords: number[],
+) => {
+  const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${carpoolCoords[0]},${carpoolCoords[1]};${destinationCoords[0]},${destinationCoords[1]}?geometries=geojson&access_token=${MAPBOX_API_KEY}`;
   const query = await fetch(url, {
     method: "GET",
   });
   const json = await query.json();
-  const route = json.routes[0].geometry.coordinates;
-  routes.value.push(route);
+  const route = {
+    geometry: json.routes[0].geometry.coordinates,
+    carpoolCoords: carpoolCoords,
+    destinationCoords: destinationCoords,
+  };
 
-  mapInstance.value.getSource("route").setData(routeGeoJSON.value);
+  return route;
+};
+
+// Edit destination location
+
+const toggleEditRecord = (e: Event) => {
+  e.preventDefault();
+  editDestination.value = !editDestination.value;
 };
 </script>
 
@@ -82,15 +102,28 @@ const getRoute = async (url: string) => {
         >
           Destination Address
         </label>
-        <div v-if="!!destinationLocation">
-          {{ destinationLocation?.full_address }}
-        </div>
-        <mapbox-search-box
-          v-else
-          :access-token="MAPBOX_API_KEY"
-          @retrieve="onRetrieveDestinationLocation"
+        <div
+          v-if="!!destinationLocation && editDestination == false"
+          class="flex justify-between"
         >
-        </mapbox-search-box>
+          <p>{{ destinationLocation?.full_address }}</p>
+          <button @click="toggleEditRecord">Edit</button>
+        </div>
+        <div
+          v-if="!destinationLocation || editDestination"
+          class="flex gap-4 w-full"
+        >
+          <mapbox-search-box
+            :access-token="MAPBOX_API_KEY"
+            :language="['nl']"
+            class="w-full"
+            @retrieve="onRetrieveDestinationLocation"
+          >
+          </mapbox-search-box>
+          <button v-if="editDestination" @click="toggleEditRecord">
+            Cancel
+          </button>
+        </div>
       </div>
       <div class="mb-4">
         <label
@@ -101,11 +134,12 @@ const getRoute = async (url: string) => {
         </label>
         <ol>
           <li v-for="(location, index) in carpoolLocations" :key="index">
-            {{ location.full_address }}
+            <AddressLine :location="location" />
           </li>
         </ol>
         <mapbox-search-box
           :access-token="MAPBOX_API_KEY"
+          :language="['nl']"
           @retrieve="onRetrieveCarpoolLocation"
         >
         </mapbox-search-box>
