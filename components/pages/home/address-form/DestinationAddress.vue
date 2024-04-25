@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { useHomeMapStore } from "~/stores/maps/home";
 import type { Location } from "~/types/Location";
 
+const indexStore = useIndexStore();
 const homeMapStore = useHomeMapStore();
+
+const { isLoading } = storeToRefs(indexStore);
 const {
   mapInstance,
   destinationLocation,
@@ -15,7 +17,8 @@ const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
 
 const editDestination = ref<boolean>(false);
 
-const onRetrieveDestinationLocation = (event: any) => {
+const onRetrieveDestinationLocation = async (event: any) => {
+  isLoading.value = true;
   const destination: Location = {
     coordinates: event.detail.features[0].geometry.coordinates as number[],
     context: event.detail.features[0].properties.context as LocationContext,
@@ -23,14 +26,14 @@ const onRetrieveDestinationLocation = (event: any) => {
   };
 
   destinationLocation.value = destination;
-  mapInstance.value.getSource("markers").setData(markersGeoJSON.value);
+  mapInstance.value!.getSource("markers").setData(markersGeoJSON.value);
 
   if (editDestination.value) {
-    updateRoutes();
+    await updateRoutes();
 
-    mapInstance.value.getSource("routes").setData(routesGeoJSON.value);
     editDestination.value = false;
   }
+  isLoading.value = false;
 };
 
 const updateRoutes = async () => {
@@ -43,6 +46,7 @@ const updateRoutes = async () => {
     );
 
     routes.value.push(route);
+    mapInstance.value!.getSource("routes").setData(routesGeoJSON.value);
   });
 };
 

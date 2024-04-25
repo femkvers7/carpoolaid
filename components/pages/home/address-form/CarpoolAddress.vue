@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { Location } from "~/types/Location";
-import { useHomeMapStore } from "~/stores/maps/home";
 
 const props = defineProps({
   location: {
@@ -9,8 +8,10 @@ const props = defineProps({
   },
 });
 
+const indexStore = useIndexStore();
 const homeMapStore = useHomeMapStore();
 
+const { isLoading } = storeToRefs(indexStore);
 const { carpoolLocations, mapInstance, markersGeoJSON, routesGeoJSON, routes } =
   storeToRefs(homeMapStore);
 
@@ -23,6 +24,7 @@ const toggleEditLocation = (e: Event) => {
 
 const deleteLocation = (e: Event) => {
   e.preventDefault();
+  isLoading.value = true;
   carpoolLocations.value = carpoolLocations.value.filter(
     (loc: Location) => loc !== props.location,
   );
@@ -30,8 +32,10 @@ const deleteLocation = (e: Event) => {
     (route: Route) => route.carpoolCoords !== props.location.coordinates,
   );
 
-  mapInstance.value.getSource("markers").setData(markersGeoJSON.value);
-  mapInstance.value.getSource("routes").setData(routesGeoJSON.value);
+  mapInstance.value!.getSource("markers").setData(markersGeoJSON.value);
+  mapInstance.value!.getSource("routes").setData(routesGeoJSON.value);
+
+  isLoading.value = false;
 };
 </script>
 

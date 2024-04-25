@@ -8,7 +8,6 @@
     </div>
     <AddressForm />
     <MapTraditional class="map" />
-    <!-- <MapWithPackage class="map" /> -->
   </div>
 </template>
 

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import mapboxgl from "mapbox-gl";
-import { useHomeMapStore } from "~/stores/maps/home";
 
 useHead({
   link: [

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useHomeMapStore } from "~/stores/maps/home";
 import type { Location } from "~/types/Location";
 
 useHead({
@@ -13,7 +12,9 @@ useHead({
 });
 
 const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
+const indexStore = useIndexStore();
 const homeMapStore = useHomeMapStore();
+const { isLoading } = storeToRefs(indexStore);
 const {
   destinationLocation,
   carpoolLocations,
@@ -28,6 +29,7 @@ const onRetrieveCarpoolLocation = async (event: any) => {
     window.alert("Please select a destination first.");
     return;
   }
+  isLoading.value = true;
 
   const coordinates = event.detail.features[0].geometry.coordinates as number[];
   const carpoolLocation: Location = {
@@ -38,7 +40,7 @@ const onRetrieveCarpoolLocation = async (event: any) => {
 
   carpoolLocations.value.push(carpoolLocation);
 
-  mapInstance.value.getSource("markers").setData(markersGeoJSON.value);
+  mapInstance.value!.getSource("markers").setData(markersGeoJSON.value);
 
   // compute route
   if (destinationLocation.value) {
@@ -48,8 +50,9 @@ const onRetrieveCarpoolLocation = async (event: any) => {
     );
 
     routes.value.push(route);
-    mapInstance.value.getSource("routes").setData(routesGeoJSON.value);
+    mapInstance.value!.getSource("routes").setData(routesGeoJSON.value);
   }
+  isLoading.value = false;
 };
 </script>
 

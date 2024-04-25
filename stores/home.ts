@@ -14,7 +14,6 @@ export const useHomeMapStore = defineStore("homeMap", () => {
   const markersGeoJSON = computed(() => {
     if (!(carpoolLocations.value.length || destinationLocation.value))
       return null;
-
     const destinationFeature = destinationLocation.value
       ? {
           type: "Feature",
@@ -84,8 +83,6 @@ export const useHomeMapStore = defineStore("homeMap", () => {
       carpoolCoords: carpoolCoords,
       destinationCoords: destinationCoords,
     };
-
-    console.log(route);
 
     return route;
   };
