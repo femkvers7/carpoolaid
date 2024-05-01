@@ -1,5 +1,8 @@
-$heading-color: #254935;
-$intro-color: #666;
+:root {
+  --h1-color: var(--teal-900);
+  --h2-color: var(--teal-800);
+  --intro-color: var(--neutral-700);
+}
 
 main {
   width: 80%;
@@ -8,19 +11,19 @@ main {
 
 h1 {
   font-size: 2rem;
-  color: $heading-color;
+  color: var(--h1-color);
   margin-bottom: 0.5rem;
 }
 
 h2 {
   font-size: 1.5rem;
-  color: $heading-color;
+  color: var(--h2-color);
   margin-bottom: 0.5rem;
 }
 
 .intro {
   font-size: 1rem;
-  color: $intro-color;
+  color: var(--intro-color);
   line-height: 1.4;
 }
 

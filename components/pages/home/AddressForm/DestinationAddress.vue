@@ -5,14 +5,8 @@ const indexStore = useIndexStore();
 const homeMapStore = useHomeMapStore();
 
 const { isLoading } = storeToRefs(indexStore);
-const {
-  mapInstance,
-  destinationLocation,
-  carpoolLocations,
-  routes,
-  markersGeoJSON,
-  routesGeoJSON,
-} = storeToRefs(homeMapStore);
+const { destinationLocation, carpoolLocations, routes } =
+  storeToRefs(homeMapStore);
 const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
 
 const editDestination = ref<boolean>(false);
@@ -26,29 +20,18 @@ const onRetrieveDestinationLocation = async (event: any) => {
   };
 
   destinationLocation.value = destination;
-  mapInstance.value!.getSource("markers").setData(markersGeoJSON.value);
 
-  if (editDestination.value) {
-    await updateRoutes();
+  if (editDestination.value || carpoolLocations.value.length > 0) {
+    await homeMapStore.updateRoutes();
+    homeMapStore.updateMapData(["markers", "routes"]);
 
     editDestination.value = false;
+  } else {
+    homeMapStore.updateMapData(["markers"]);
   }
   isLoading.value = false;
 };
 
-const updateRoutes = async () => {
-  routes.value = [];
-
-  carpoolLocations.value.forEach(async (location) => {
-    const route = await homeMapStore.getRoute(
-      location.coordinates,
-      destinationLocation.value!.coordinates,
-    );
-
-    routes.value.push(route);
-    mapInstance.value!.getSource("routes").setData(routesGeoJSON.value);
-  });
-};
 
 const toggleEditDestination = (e: Event) => {
   e.preventDefault();
@@ -78,6 +61,15 @@ const toggleEditDestination = (e: Event) => {
       <mapbox-search-box
         :access-token="MAPBOX_API_KEY"
         :language="['nl']"
+        :types="[
+          'city',
+          'street',
+          'address',
+          'postcode',
+          'place',
+          'locality',
+          'neighborhood',
+        ]"
         class="w-full"
         @retrieve="onRetrieveDestinationLocation"
       >

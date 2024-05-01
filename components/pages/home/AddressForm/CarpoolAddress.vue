@@ -12,8 +12,7 @@ const indexStore = useIndexStore();
 const homeMapStore = useHomeMapStore();
 
 const { isLoading } = storeToRefs(indexStore);
-const { carpoolLocations, mapInstance, markersGeoJSON, routesGeoJSON, routes } =
-  storeToRefs(homeMapStore);
+const { carpoolLocations, routes } = storeToRefs(homeMapStore);
 
 const editLocation = ref(false);
 
@@ -25,16 +24,16 @@ const toggleEditLocation = (e: Event) => {
 const deleteLocation = (e: Event) => {
   e.preventDefault();
   isLoading.value = true;
+
   carpoolLocations.value = carpoolLocations.value.filter(
-    (loc: Location) => loc !== props.location,
+    (loc) => loc !== props.location,
   );
+
   routes.value = routes.value.filter(
     (route: Route) => route.carpoolCoords !== props.location.coordinates,
   );
 
-  mapInstance.value!.getSource("markers").setData(markersGeoJSON.value);
-  mapInstance.value!.getSource("routes").setData(routesGeoJSON.value);
-
+  homeMapStore.updateMapData(["markers", "routes"]);
   isLoading.value = false;
 };
 </script>

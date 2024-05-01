@@ -1,9 +1,14 @@
 import { defineStore } from "pinia";
 import type { Location } from "~/types/Location";
 import type { Route } from "~/types/Route";
-import mapboxgl from "mapbox-gl";
+import mapboxgl, { GeoJSONSource } from "mapbox-gl";
 
 export const useHomeMapStore = defineStore("homeMap", () => {
+  const emptyFeatureCollection: GeoJSON.FeatureCollection = {
+    type: "FeatureCollection",
+    features: [],
+  };
+
   const destinationLocation = ref<Location | null>(null);
   const carpoolLocations = ref<Location[]>([]);
   const routes = ref<Route[]>([]);
@@ -11,25 +16,28 @@ export const useHomeMapStore = defineStore("homeMap", () => {
 
   const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
 
-  const markersGeoJSON = computed(() => {
+  const markersGeoJSON = computed((): GeoJSON.FeatureCollection => {
     if (!(carpoolLocations.value.length || destinationLocation.value))
-      return null;
-    const destinationFeature = destinationLocation.value
-      ? {
-          type: "Feature",
-          geometry: {
-            type: "Point",
-            coordinates: destinationLocation.value.coordinates,
-          },
-          properties: {
-            title: "Destination",
-            description: destinationLocation.value.full_address,
-            type: "destination",
-          },
-        }
-      : null;
+      return emptyFeatureCollection;
 
-    const carpoolFeatures = carpoolLocations.value.length
+    const destinationFeature: GeoJSON.Feature[] = destinationLocation.value
+      ? [
+          {
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: destinationLocation.value.coordinates,
+            },
+            properties: {
+              title: "Destination",
+              description: destinationLocation.value.full_address,
+              type: "destination",
+            },
+          },
+        ]
+      : [];
+
+    const carpoolFeatures: GeoJSON.Feature[] = carpoolLocations.value.length
       ? carpoolLocations.value.map((location) => ({
           type: "Feature",
           geometry: {
@@ -46,16 +54,13 @@ export const useHomeMapStore = defineStore("homeMap", () => {
 
     return {
       type: "FeatureCollection",
-      features: [destinationFeature, ...carpoolFeatures],
+      features: [...destinationFeature, ...carpoolFeatures],
     };
   });
 
-  const routesGeoJSON = computed(() => {
+  const routesGeoJSON = computed((): GeoJSON.FeatureCollection => {
     if (!destinationLocation.value || !routes.value.length) {
-      return {
-        type: "FeatureCollection",
-        features: [],
-      };
+      return emptyFeatureCollection;
     }
     return {
       type: "FeatureCollection",
@@ -65,6 +70,7 @@ export const useHomeMapStore = defineStore("homeMap", () => {
           type: "LineString",
           coordinates: route.geometry,
         },
+        properties: {},
       })),
     };
   });
@@ -87,6 +93,33 @@ export const useHomeMapStore = defineStore("homeMap", () => {
     return route;
   };
 
+  const updateRoutes = async () => {
+    routes.value = [];
+
+    carpoolLocations.value.forEach(async (location) => {
+      const route = await getRoute(
+        location.coordinates,
+        destinationLocation.value!.coordinates,
+      );
+
+      routes.value.push(route);
+    });
+    console.log(routes.value, "routes");
+  };
+
+  const updateMapData = (types: string[]) => {
+    if (types.includes("markers")) {
+      (mapInstance.value!.getSource("markers") as GeoJSONSource).setData(
+        markersGeoJSON.value,
+      );
+    }
+    if (types.includes("routes")) {
+      (mapInstance.value!.getSource("routes") as GeoJSONSource).setData(
+        routesGeoJSON.value,
+      );
+    }
+  };
+
   return {
     destinationLocation,
     carpoolLocations,
@@ -95,5 +128,7 @@ export const useHomeMapStore = defineStore("homeMap", () => {
     markersGeoJSON,
     routesGeoJSON,
     getRoute,
+    updateRoutes,
+    updateMapData,
   };
 });

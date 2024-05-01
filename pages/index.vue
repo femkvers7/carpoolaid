@@ -1,4 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const csvStore = useHomeCsvStore();
+const { csvData, csvHeaders } = storeToRefs(csvStore);
+
+const showPreviewTable = computed(
+  () => csvData.value.length || csvHeaders.value.length,
+);
+</script>
 
 <template>
   <div>
@@ -6,7 +13,15 @@
       <h1>CarpoolAid</h1>
       <p class="intro">Your helper for arranging group carpools!</p>
     </div>
-    <AddressForm />
+    <div class="flex flex-col items-center w-full">
+      <p>Enter destination and carpool addresses here</p>
+      <AddressForm class="w-full" />
+      <p class="italic">Or</p>
+      <p>Upload a CSV file</p>
+      <UploadCsv />
+    </div>
+    <!--<PreviewTable v-if="showPreviewTable" />-->
+    <p v-if="showPreviewTable">upload succesful</p>
     <MapTraditional class="map" />
   </div>
 </template>

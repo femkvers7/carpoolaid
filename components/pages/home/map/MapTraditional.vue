@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import mapboxgl from "mapbox-gl";
+import mapboxgl, { Map } from "mapbox-gl";
 
 useHead({
   link: [
@@ -45,7 +45,7 @@ onMounted(() => {
       paint: {
         "line-color": "#008170",
         "line-width": 5,
-        "line-opacity": 0.75,
+        "line-opacity": 0.6,
       },
     });
 

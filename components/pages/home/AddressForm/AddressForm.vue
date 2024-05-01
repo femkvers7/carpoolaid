@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { GeoJSONSource } from "mapbox-gl";
 import type { Location } from "~/types/Location";
 
 useHead({
@@ -15,16 +16,11 @@ const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
 const indexStore = useIndexStore();
 const homeMapStore = useHomeMapStore();
 const { isLoading } = storeToRefs(indexStore);
-const {
-  destinationLocation,
-  carpoolLocations,
-  routes,
-  mapInstance,
-  markersGeoJSON,
-  routesGeoJSON,
-} = storeToRefs(homeMapStore);
+const { destinationLocation, carpoolLocations, routes } =
+  storeToRefs(homeMapStore);
 
 const onRetrieveCarpoolLocation = async (event: any) => {
+  console.log("start retrieve carpool location");
   if (!destinationLocation.value) {
     window.alert("Please select a destination first.");
     return;
@@ -40,8 +36,6 @@ const onRetrieveCarpoolLocation = async (event: any) => {
 
   carpoolLocations.value.push(carpoolLocation);
 
-  mapInstance.value!.getSource("markers").setData(markersGeoJSON.value);
-
   // compute route
   if (destinationLocation.value) {
     const route = await homeMapStore.getRoute(
@@ -50,8 +44,11 @@ const onRetrieveCarpoolLocation = async (event: any) => {
     );
 
     routes.value.push(route);
-    mapInstance.value!.getSource("routes").setData(routesGeoJSON.value);
+    homeMapStore.updateMapData(["markers", "routes"]);
+  } else {
+    homeMapStore.updateMapData(["markers"]);
   }
+
   isLoading.value = false;
 };
 </script>
@@ -75,6 +72,15 @@ const onRetrieveCarpoolLocation = async (event: any) => {
         <mapbox-search-box
           :access-token="MAPBOX_API_KEY"
           :language="['nl']"
+          :types="[
+            'city',
+            'street',
+            'address',
+            'postcode',
+            'place',
+            'locality',
+            'neighborhood',
+          ]"
           @retrieve="onRetrieveCarpoolLocation"
         >
         </mapbox-search-box>
