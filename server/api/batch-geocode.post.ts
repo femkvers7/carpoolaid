@@ -17,7 +17,6 @@ const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  console.log(body, "body");
 
   const url = `https://api.mapbox.com/search/geocode/v6/batch?access_token=${MAPBOX_API_KEY}`;
   const query = await fetch(url, {

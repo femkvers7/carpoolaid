@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",
+    "@types/papaparse": "^5.3.14",
+    "@types/uuid": "^9.0.8",
     "mapbox-gl": "^3.3.0",
     "nuxt": "^3.11.1",
     "papaparse": "^5.4.1",

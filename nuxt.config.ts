@@ -5,7 +5,6 @@ export default defineNuxtConfig({
         "pk.eyJ1IjoiZmVta2V2ZXJzd2V5dmVsZGFydGV2ZWxkZSIsImEiOiJjbHZleDJtMWcwY2cyMmtwNXExbnN5ejAwIn0.doUbEAUPIhi7_pHM5VD6Uw",
     },
   },
-  buildModules: ["nuxt-vite"],
   modules: ["@nuxtjs/tailwindcss", "@pinia/nuxt"],
   imports: {
     dirs: ["types/*.ts", "stores/*.ts", "types/**/*.ts", "stores/**/*.ts"],

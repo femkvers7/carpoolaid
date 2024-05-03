@@ -2,7 +2,8 @@
 import Papa from "papaparse";
 
 const homeMapStore = useHomeMapStore();
-const { destinationLocation } = storeToRefs(homeMapStore);
+const { destinationLocation, routes, carpoolLocations } =
+  storeToRefs(homeMapStore);
 
 const handleFileUpload = (event: Event) => {
   const uploadedFile = (event.target as HTMLInputElement).files?.[0] || null;
@@ -15,8 +16,6 @@ const handleFileUpload = (event: Event) => {
     header: true,
     skipEmptyLines: true,
     complete: async (results: any) => {
-      console.log(results, "results from csv upload");
-
       const carpoolBody = results.data.map((result: any) => {
         return {
           place: result["Place"],
@@ -28,8 +27,6 @@ const handleFileUpload = (event: Event) => {
         };
       });
 
-      console.log(carpoolBody, "carpoolBody");
-
       const result = await $fetch("/api/batch-geocode", {
         method: "POST",
         headers: {
@@ -38,17 +35,42 @@ const handleFileUpload = (event: Event) => {
         body: carpoolBody,
       });
 
-      console.log(result, "result from custom api call");
-
       homeMapStore.$patch({
-        carpoolLocations: result,
+        carpoolLocations: await result,
       });
 
       // update routes
       if (destinationLocation.value) {
-        homeMapStore.updateRoutes();
+        await homeMapStore.updateRoutes();
       }
       homeMapStore.updateMapData(["markers", "routes"]);
+
+      // give suggestions
+      const result2 = await $fetch("/api/suggestions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: {
+          destination: destinationLocation.value,
+          routes: routes.value,
+        },
+      });
+
+      // temporary logging
+      console.log(
+        routes.value.map((route) => {
+          const carpoolLabel = carpoolLocations.value.find(
+            (location: any) => location.id === route.carpoolId,
+          )?.label;
+          return {
+            routeId: route.id,
+            carpoolId: route.carpoolId,
+            carpoolLabel,
+          };
+        }),
+      );
+      console.log(result2);
     },
   });
 };

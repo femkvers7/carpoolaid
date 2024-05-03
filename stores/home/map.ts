@@ -100,14 +100,10 @@ export const useHomeMapStore = defineStore("homeMap", () => {
 
   const updateRoutes = async () => {
     routes.value = [];
-    console.log(carpoolLocations.value, "carpoolLocations");
-
-    carpoolLocations.value.forEach(async (location) => {
+    for (const location of carpoolLocations.value) {
       const route = await getRoute(location, destinationLocation.value!);
-
       routes.value.push(route);
-    });
-    console.log(routes.value, "routes");
+    }
   };
 
   const updateMapData = (types: string[]) => {
