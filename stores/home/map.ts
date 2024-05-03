@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import type { Location } from "~/types/Location";
 import type { Route } from "~/types/Route";
 import mapboxgl, { GeoJSONSource } from "mapbox-gl";
+import { v4 as uuidv4 } from "uuid";
 
 export const useHomeMapStore = defineStore("homeMap", () => {
   const emptyFeatureCollection: GeoJSON.FeatureCollection = {
@@ -30,7 +31,7 @@ export const useHomeMapStore = defineStore("homeMap", () => {
             },
             properties: {
               title: "Destination",
-              description: destinationLocation.value.full_address,
+              description: destinationLocation.value.label,
               type: "destination",
             },
           },
@@ -46,7 +47,7 @@ export const useHomeMapStore = defineStore("homeMap", () => {
           },
           properties: {
             title: "Carpool",
-            description: location.full_address,
+            description: location.label,
             type: "carpool",
           },
         }))
@@ -76,18 +77,22 @@ export const useHomeMapStore = defineStore("homeMap", () => {
   });
 
   const getRoute = async (
-    carpoolCoords: number[],
-    destinationCoords: number[],
-  ) => {
-    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${carpoolCoords[0]},${carpoolCoords[1]};${destinationCoords[0]},${destinationCoords[1]}?geometries=geojson&access_token=${MAPBOX_API_KEY}`;
+    carpool: Location,
+    destination: Location,
+  ): Promise<Route> => {
+    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${carpool.coordinates[0]},${carpool.coordinates[1]};${destination.coordinates[0]},${destination.coordinates[1]}?geometries=geojson&overview=full&access_token=${MAPBOX_API_KEY}`;
     const query = await fetch(url, {
       method: "GET",
     });
     const json = await query.json();
+
     const route = {
+      id: uuidv4(),
+      carpoolId: carpool.id,
+      destinationId: destination.id,
+      distance: json.routes[0].distance,
+      duration: json.routes[0].duration,
       geometry: json.routes[0].geometry.coordinates,
-      carpoolCoords: carpoolCoords,
-      destinationCoords: destinationCoords,
     };
 
     return route;
@@ -95,12 +100,10 @@ export const useHomeMapStore = defineStore("homeMap", () => {
 
   const updateRoutes = async () => {
     routes.value = [];
+    console.log(carpoolLocations.value, "carpoolLocations");
 
     carpoolLocations.value.forEach(async (location) => {
-      const route = await getRoute(
-        location.coordinates,
-        destinationLocation.value!.coordinates,
-      );
+      const route = await getRoute(location, destinationLocation.value!);
 
       routes.value.push(route);
     });

@@ -26,11 +26,11 @@ const deleteLocation = (e: Event) => {
   isLoading.value = true;
 
   carpoolLocations.value = carpoolLocations.value.filter(
-    (loc) => loc !== props.location,
+    (loc) => loc.id !== props.location.id,
   );
 
   routes.value = routes.value.filter(
-    (route: Route) => route.carpoolCoords !== props.location.coordinates,
+    (route: Route) => route.carpoolId !== props.location.id,
   );
 
   homeMapStore.updateMapData(["markers", "routes"]);
@@ -40,7 +40,7 @@ const deleteLocation = (e: Event) => {
 
 <template>
   <div class="flex justify-between">
-    <p>{{ location.full_address }}</p>
+    <p>{{ location.label }}</p>
     <div class="flex gap-3">
       <button @click="toggleEditLocation">Edit</button>
       <button @click="deleteLocation">Remove</button>

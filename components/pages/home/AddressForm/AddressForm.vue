@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { GeoJSONSource } from "mapbox-gl";
 import type { Location } from "~/types/Location";
+import { v4 as uuidv4 } from "uuid";
 
 useHead({
   script: [
@@ -20,18 +20,24 @@ const { destinationLocation, carpoolLocations, routes } =
   storeToRefs(homeMapStore);
 
 const onRetrieveCarpoolLocation = async (event: any) => {
-  console.log("start retrieve carpool location");
   if (!destinationLocation.value) {
     window.alert("Please select a destination first.");
     return;
   }
   isLoading.value = true;
 
-  const coordinates = event.detail.features[0].geometry.coordinates as number[];
+  const locationFeatures = event.detail.features[0];
   const carpoolLocation: Location = {
-    coordinates: coordinates,
-    context: event.detail.features[0].properties.context,
-    full_address: event.detail.features[0].properties.full_address,
+    id: uuidv4(),
+    coordinates: locationFeatures.geometry.coordinates as number[],
+    label: locationFeatures.properties.context.place?.name ?? "Carpool",
+    address: {
+      country: locationFeatures.properties.context.country?.name ?? "Belgium",
+      place: locationFeatures.properties.context.place?.name ?? "",
+      street: locationFeatures.properties.context.street?.name ?? "",
+      address_number:
+        locationFeatures.properties.context.address?.address_number ?? "",
+    },
   };
 
   carpoolLocations.value.push(carpoolLocation);
@@ -39,8 +45,8 @@ const onRetrieveCarpoolLocation = async (event: any) => {
   // compute route
   if (destinationLocation.value) {
     const route = await homeMapStore.getRoute(
-      carpoolLocation.coordinates,
-      destinationLocation.value!.coordinates,
+      carpoolLocation,
+      destinationLocation.value!,
     );
 
     routes.value.push(route);

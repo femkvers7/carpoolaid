@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Location } from "~/types/Location";
+import { v4 as uuidv4 } from "uuid";
 
 const indexStore = useIndexStore();
 const homeMapStore = useHomeMapStore();
@@ -13,10 +14,19 @@ const editDestination = ref<boolean>(false);
 
 const onRetrieveDestinationLocation = async (event: any) => {
   isLoading.value = true;
+
+  const locationFeatures = event.detail.features[0];
   const destination: Location = {
-    coordinates: event.detail.features[0].geometry.coordinates as number[],
-    context: event.detail.features[0].properties.context as LocationContext,
-    full_address: event.detail.features[0].properties.full_address as string,
+    id: uuidv4(),
+    coordinates: locationFeatures.geometry.coordinates as number[],
+    label: locationFeatures.properties.context.place?.name ?? "Destination",
+    address: {
+      country: locationFeatures.properties.context.country?.name ?? "Belgium",
+      place: locationFeatures.properties.context.place?.name ?? "",
+      street: locationFeatures.properties.context.street?.name ?? "",
+      address_number:
+        locationFeatures.properties.context.address?.address_number ?? "",
+    },
   };
 
   destinationLocation.value = destination;
@@ -31,7 +41,6 @@ const onRetrieveDestinationLocation = async (event: any) => {
   }
   isLoading.value = false;
 };
-
 
 const toggleEditDestination = (e: Event) => {
   e.preventDefault();
@@ -51,7 +60,7 @@ const toggleEditDestination = (e: Event) => {
       v-if="!!destinationLocation && editDestination == false"
       class="flex justify-between"
     >
-      <p>{{ destinationLocation?.full_address }}</p>
+      <p>{{ destinationLocation?.label }}</p>
       <button @click="toggleEditDestination">Edit</button>
     </div>
     <div

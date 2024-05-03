@@ -1,10 +1,4 @@
 <script setup lang="ts">
-const csvStore = useHomeCsvStore();
-const { csvData, csvHeaders } = storeToRefs(csvStore);
-
-const showPreviewTable = computed(
-  () => csvData.value.length || csvHeaders.value.length,
-);
 </script>
 
 <template>
@@ -21,7 +15,6 @@ const showPreviewTable = computed(
       <UploadCsv />
     </div>
     <!--<PreviewTable v-if="showPreviewTable" />-->
-    <p v-if="showPreviewTable">upload succesful</p>
     <MapTraditional class="map" />
   </div>
 </template>

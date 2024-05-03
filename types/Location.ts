@@ -1,35 +1,19 @@
 export type Location = {
+  id: string;
   coordinates: number[];
-  full_address: string;
-  context: LocationContext;
+  label: string;
+  address: LocationAddress;
 };
 
-export type LocationContext = {
-  country: CountryDetails;
+export type LocationAddress = {
+  country: Details;
   place: Details;
-  locality: Details;
   postcode?: Details;
   street?: Details;
-  address?: AddressDetails;
-  region?: RegionDetails;
+  address_number?: Details;
 };
 
 type Details = {
   id: string;
   name: string;
-};
-
-type AddressDetails = Details & {
-  street_name: string;
-  address_number: string;
-};
-
-type CountryDetails = Details & {
-  country_code: string;
-  country_code_alpha_3: string;
-};
-
-type RegionDetails = Details & {
-  region_code: string;
-  region_code_full: string;
 };
