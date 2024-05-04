@@ -2,7 +2,7 @@
 import Papa from "papaparse";
 
 const homeMapStore = useHomeMapStore();
-const { destinationLocation, routes, carpoolLocations } =
+const { destinationLocation, routes, carpoolLocations, suggestions } =
   storeToRefs(homeMapStore);
 
 const handleFileUpload = (event: Event) => {
@@ -56,6 +56,8 @@ const handleFileUpload = (event: Event) => {
           routes: routes.value,
         },
       });
+
+      suggestions.value = await result2;
 
       // temporary logging
       console.log(

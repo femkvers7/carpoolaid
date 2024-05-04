@@ -9,6 +9,7 @@
 import { Location } from "~/types/Location";
 import type { Overlaps } from "~/types/Overlaps";
 import { Route } from "~/types/Route";
+import { Suggestion } from "~/types/Suggestion";
 
 const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
 
@@ -33,7 +34,7 @@ const calculateOverlap = async (
   const firstCommonCoord = calculateFirstCommonCoord(geometry1, geometry2);
 
   if (!firstCommonCoord) {
-    return Infinity;
+    return Number.MAX_VALUE;
   }
   const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${firstCommonCoord[0]},${firstCommonCoord[1]};${destination[0]},${destination[1]}?overview=false&access_token=${MAPBOX_API_KEY}`;
   const query = await fetch(url, {
@@ -109,21 +110,26 @@ const calculateMaxOverlap = (overlaps: Overlaps) => {
 };
 
 const calculateGroups = (overlaps: Overlaps) => {
-  const groups: string[][] = [];
+  const groups: Suggestion[] = [];
 
   while (overlaps && Object.keys(overlaps).length > 0) {
     const maxOverlap = calculateMaxOverlap(overlaps);
 
     if (maxOverlap.value > 20000) {
       const groupAlreadyExists = groups.find((group) => {
-        if (group.includes(maxOverlap.routeId1)) {
-          console.log("group with routeId1");
-          group.push(maxOverlap.routeId2);
-          return true;
-        }
         if (group.includes(maxOverlap.routeId2)) {
           console.log("group with routeId2");
           group.push(maxOverlap.routeId1);
+
+          if (group.length >= 4) {
+            console.log("group is full");
+            // delete it as an option from all overlaps
+            for (const route in overlaps) {
+              for (const assignedRoute of group) {
+                delete overlaps[route][assignedRoute];
+              }
+            }
+          }
           return true;
         }
         return false;
@@ -131,12 +137,11 @@ const calculateGroups = (overlaps: Overlaps) => {
 
       if (!groupAlreadyExists) {
         console.log("group does not exist");
-        groups.push([maxOverlap.routeId1, maxOverlap.routeId2]);
+        groups.push([maxOverlap.routeId1]);
       }
-    }
 
-    delete overlaps[maxOverlap.routeId1];
-    delete overlaps[maxOverlap.routeId2];
+      delete overlaps[maxOverlap.routeId1];
+    }
 
     // if (Object.keys(overlaps[maxOverlap.routeId1]).length === 0) {
     //   delete overlaps[maxOverlap.routeId1];

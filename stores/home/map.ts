@@ -13,6 +13,7 @@ export const useHomeMapStore = defineStore("homeMap", () => {
   const destinationLocation = ref<Location | null>(null);
   const carpoolLocations = ref<Location[]>([]);
   const routes = ref<Route[]>([]);
+  const suggestions = ref<Suggestion[]>([]);
   const mapInstance = ref<mapboxgl.Map | null>(null);
 
   const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
@@ -123,6 +124,7 @@ export const useHomeMapStore = defineStore("homeMap", () => {
     destinationLocation,
     carpoolLocations,
     routes,
+    suggestions,
     mapInstance,
     markersGeoJSON,
     routesGeoJSON,

@@ -1,4 +1,7 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const homeMapStore = useHomeMapStore();
+const { suggestions } = storeToRefs(homeMapStore);
+</script>
 
 <template>
   <div>
@@ -13,6 +16,7 @@
       <p>Upload a CSV file</p>
       <UploadCsv />
     </div>
+    <SuggestionsTable v-if="suggestions.length" />
     <!--<PreviewTable v-if="showPreviewTable" />-->
     <MapTraditional class="map" />
   </div>
