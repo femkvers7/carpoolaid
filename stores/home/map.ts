@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import type { Location } from "~/types/Location";
 import type { Route } from "~/types/Route";
-import mapboxgl, { GeoJSONSource } from "mapbox-gl";
+import mapboxgl, { GeoJSONSource, type LngLatBoundsLike } from "mapbox-gl";
 import { v4 as uuidv4 } from "uuid";
 
 export const useHomeMapStore = defineStore("homeMap", () => {
@@ -107,6 +107,49 @@ export const useHomeMapStore = defineStore("homeMap", () => {
     }
   };
 
+  // these can (normally) be used to snap map to fit all markers
+  // but rn this functionality is breaking the application
+  const bounds = computed(() => {
+    if (carpoolLocations.value.length > 1) {
+      const lngList = carpoolLocations.value.map((location) => {
+        return location.coordinates[0];
+      });
+
+      const latList = carpoolLocations.value.map((location) => {
+        return location.coordinates[1];
+      });
+
+      const bounds: mapboxgl.LngLatBoundsLike = [
+        [Math.min(...lngList), Math.min(...latList)],
+        [Math.max(...lngList), Math.max(...latList)],
+      ];
+
+      console.log(bounds);
+
+      return bounds;
+    } else {
+      return [
+        [2.567815, 50.474184],
+        [6.122369, 51.553027],
+      ] as mapboxgl.LngLatBoundsLike;
+    }
+  });
+
+  const testFunction = () => {
+    // fitBounds is breaking the page!!!
+    console.log("start testfunction");
+    const bbox: LngLatBoundsLike = [
+      [-79, 43],
+      [-73, 45],
+    ];
+    console.log("right before fitBounds");
+    mapInstance.value!.fitBounds(bbox, {
+      padding: { top: 10, bottom: 25, left: 15, right: 5 },
+    });
+
+    console.log("fitBounds finished");
+  };
+
   const updateMapData = (types: string[]) => {
     if (types.includes("markers")) {
       (mapInstance.value!.getSource("markers") as GeoJSONSource).setData(
@@ -131,5 +174,6 @@ export const useHomeMapStore = defineStore("homeMap", () => {
     getRoute,
     updateRoutes,
     updateMapData,
+    testFunction,
   };
 });

@@ -59,28 +59,11 @@ const calculateOverlapMatrix = async (
           route2.geometry,
           destination.coordinates,
         );
-        overlaps[route1.id] = overlaps[route1.id] || {};
-        overlaps[route1.id][route2.id] = overlap;
-      } else {
-        overlaps[route1.id] = overlaps[route1.id] || {};
-        overlaps[route1.id][route2.id] = 0;
+        if (overlap > 20000) {
+          overlaps[route1.id] = overlaps[route1.id] || {};
+          overlaps[route1.id][route2.id] = overlap;
+        }
       }
-    }
-  }
-
-  /* clean up */
-  // we can already delete all overlaps with value 0
-  for (const routeId1 in overlaps) {
-    for (const routeId2 in overlaps[routeId1]) {
-      if (overlaps[routeId1][routeId2] === 0) {
-        delete overlaps[routeId1][routeId2];
-      }
-    }
-  }
-
-  for (const route in overlaps) {
-    if (Object.keys(overlaps[route]).length === 0) {
-      delete overlaps[route];
     }
   }
 
@@ -113,7 +96,9 @@ const calculateGroups = (overlaps: Overlaps) => {
   const groups: Suggestion[] = [];
 
   while (overlaps && Object.keys(overlaps).length > 0) {
+    console.log(overlaps, "overlaps");
     const maxOverlap = calculateMaxOverlap(overlaps);
+    console.log(maxOverlap, "maxOverlap");
 
     if (maxOverlap.value > 20000) {
       const groupAlreadyExists = groups.find((group) => {
@@ -138,17 +123,12 @@ const calculateGroups = (overlaps: Overlaps) => {
       if (!groupAlreadyExists) {
         console.log("group does not exist");
         groups.push([maxOverlap.routeId1]);
+        console.log(groups, "groups");
       }
 
       delete overlaps[maxOverlap.routeId1];
+      console.log("one overlap deleted");
     }
-
-    // if (Object.keys(overlaps[maxOverlap.routeId1]).length === 0) {
-    //   delete overlaps[maxOverlap.routeId1];
-    // }
-    // if (Object.keys(overlaps[maxOverlap.routeId2]).length === 0) {
-    //   delete overlaps[maxOverlap.routeId2];
-    // }
 
     console.log("groups", groups);
     console.log("overlaps", overlaps);

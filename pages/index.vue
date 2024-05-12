@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const homeMapStore = useHomeMapStore();
-const { suggestions } = storeToRefs(homeMapStore);
+const indexStore = useIndexStore();
+const { showSuggestions } = storeToRefs(indexStore);
 </script>
 
 <template>
@@ -16,7 +16,10 @@ const { suggestions } = storeToRefs(homeMapStore);
       <p>Upload a CSV file</p>
       <UploadCsv />
     </div>
-    <SuggestionsTable v-if="suggestions.length" />
+    <div class="w-full">
+      <SuggestionButton class="my-4 mx-auto block" />
+      <SuggestionsTable v-if="showSuggestions" />
+    </div>
     <!--<PreviewTable v-if="showPreviewTable" />-->
     <MapTraditional class="map" />
   </div>

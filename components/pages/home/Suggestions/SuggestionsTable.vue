@@ -23,25 +23,22 @@ const cellLabel = (routeId: string) => {
 </script>
 
 <template>
-  <div>
-    <div>Suggestions for carpool:</div>
-    <table>
-      <thead>
-        <tr>
-          <th v-for="(suggestion, index) in suggestions" :key="index">
-            Group {{ index + 1 }} ({{ suggestion.length }})
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(row, rowIndex) in maxRows" :key="rowIndex">
-          <td v-for="(suggestion, index) in suggestions" :key="index">
-            {{ cellLabel(suggestion[rowIndex]) }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <table>
+    <thead>
+      <tr>
+        <th v-for="(suggestion, index) in suggestions" :key="index">
+          Group {{ index + 1 }} ({{ suggestion.length }})
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(row, rowIndex) in maxRows" :key="rowIndex">
+        <td v-for="(suggestion, index) in suggestions" :key="index">
+          {{ cellLabel(suggestion[rowIndex]) }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </template>
 
 <style scoped>

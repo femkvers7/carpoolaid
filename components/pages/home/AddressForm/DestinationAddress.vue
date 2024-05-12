@@ -6,8 +6,7 @@ const indexStore = useIndexStore();
 const homeMapStore = useHomeMapStore();
 
 const { isLoading } = storeToRefs(indexStore);
-const { destinationLocation, carpoolLocations, routes } =
-  storeToRefs(homeMapStore);
+const { destinationLocation, carpoolLocations } = storeToRefs(homeMapStore);
 const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
 
 const editDestination = ref<boolean>(false);

@@ -27,6 +27,8 @@ onMounted(() => {
     language: "nl",
   });
 
+  map.addControl(new mapboxgl.NavigationControl());
+
   mapInstance.value = map;
 
   map.on("load", () => {

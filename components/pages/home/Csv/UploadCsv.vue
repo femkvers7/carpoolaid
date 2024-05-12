@@ -44,35 +44,6 @@ const handleFileUpload = (event: Event) => {
         await homeMapStore.updateRoutes();
       }
       homeMapStore.updateMapData(["markers", "routes"]);
-
-      // give suggestions
-      const result2 = await $fetch("/api/suggestions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: {
-          destination: destinationLocation.value,
-          routes: routes.value,
-        },
-      });
-
-      suggestions.value = await result2;
-
-      // temporary logging
-      console.log(
-        routes.value.map((route) => {
-          const carpoolLabel = carpoolLocations.value.find(
-            (location: any) => location.id === route.carpoolId,
-          )?.label;
-          return {
-            routeId: route.id,
-            carpoolId: route.carpoolId,
-            carpoolLabel,
-          };
-        }),
-      );
-      console.log(result2);
     },
   });
 };
