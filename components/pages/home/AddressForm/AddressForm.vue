@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 useHead({
   script: [
     {
-      src: "https://api.mapbox.com/search-js/v1.0.0-beta.19/web.js",
+      src: "https://api.mapbox.com/search-js/v1.0.0-beta.21/web.js",
       id: "search-js",
       defer: "",
     },

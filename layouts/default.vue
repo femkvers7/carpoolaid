@@ -6,7 +6,10 @@ const { isLoading } = storeToRefs(indexStore);
 </script>
 
 <template>
-  <main :class="{ loading: isLoading }">
-    <slot />
-  </main>
+  <VFragment>
+    <NavBar />
+    <main :class="{ loading: isLoading }">
+      <slot />
+    </main>
+  </VFragment>
 </template>

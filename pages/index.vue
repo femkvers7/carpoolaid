@@ -21,7 +21,7 @@ const { showSuggestions } = storeToRefs(indexStore);
       <SuggestionsTable v-if="showSuggestions" />
     </div>
     <!--<PreviewTable v-if="showPreviewTable" />-->
-    <MapTraditional class="map" />
+    <Map class="map" />
   </div>
 </template>
 

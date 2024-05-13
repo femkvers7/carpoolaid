@@ -27,7 +27,7 @@ onMounted(() => {
     language: "nl",
   });
 
-  map.addControl(new mapboxgl.NavigationControl());
+  map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
 
   mapInstance.value = map;
 
@@ -114,9 +114,16 @@ onMounted(() => {
   </div>
 </template>
 
-<style>
+<style scoped lang="scss">
+.map-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
 .map-container {
   width: 100%;
-  height: 50rem;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 </style>

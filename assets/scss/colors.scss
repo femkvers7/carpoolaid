@@ -1,4 +1,4 @@
-:root, .light, .light-theme {
+:root {
   --teal-100: #fafefd;
   --teal-200: #f3fbf9;
   --teal-300: #e1f8f2;
@@ -20,6 +20,14 @@
   --neutral-900: #62636c;
 
   --black: #1e1f24;
-  --white: #FCFCFD;
+
+// new colors:
+
+  --green: #87A57F;
+  --beige: #F7E9DE;
+  --lavender: #CABAD7;
+  --purple: #4F364B;
+  --red: #DB3E1D;
+  --white: #FFFBF9;
 
 }
