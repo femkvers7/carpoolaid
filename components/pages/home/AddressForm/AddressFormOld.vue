@@ -1,3 +1,5 @@
+<!-- old/outdated -->
+
 <script setup lang="ts">
 import type { Location } from "~/types/Location";
 import { v4 as uuidv4 } from "uuid";

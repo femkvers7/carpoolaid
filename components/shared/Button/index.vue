@@ -16,7 +16,7 @@ defineEmits(["submit"]);
     :style="{
       width: width ?? 'fit-content',
     }"
-    :class="`button button--${variant}`"
+    :class="`button button--${variant} flex items-center justify-center`"
     @click.prevent="$emit('submit')"
   >
     <slot> Submit</slot>
@@ -27,6 +27,11 @@ defineEmits(["submit"]);
 .button {
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
+}
+
+.button--accent {
+  color: var(--beige);
+  background-color: var(--purple);
 }
 
 .button--primary {
@@ -43,5 +48,12 @@ defineEmits(["submit"]);
   background-color: transparent;
   color: var(--red);
   text-decoration: underline;
+}
+
+.button--neutral {
+  background-color: transparent;
+  color: var(--purple);
+  padding: 0;
+  border-radius: 0;
 }
 </style>

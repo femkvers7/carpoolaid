@@ -1,8 +1,7 @@
 export type Location = {
   id: string;
   coordinates: number[];
-  label?: string;
-  carAvailable?: boolean;
+  name?: string;
   carSeats?: number;
   address: LocationAddress;
 };

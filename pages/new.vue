@@ -39,7 +39,7 @@ const { showSidebar } = storeToRefs(indexStore);
 
 .slide-fade-enter-from,
 .slide-fade-leave-to {
-  transform: translateX(-20px);
+  transform: translateX(-500px);
   opacity: 0;
 }
 </style>

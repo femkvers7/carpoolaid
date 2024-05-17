@@ -31,8 +31,8 @@ export const useHomeMapStore = defineStore("homeMap", () => {
               coordinates: destinationLocation.value.coordinates,
             },
             properties: {
-              title: "Destination",
-              description: destinationLocation.value.label,
+              title: destinationLocation.value.address.place,
+              description: "Destination",
               type: "destination",
             },
           },
@@ -48,7 +48,7 @@ export const useHomeMapStore = defineStore("homeMap", () => {
           },
           properties: {
             title: "Carpool",
-            description: location.label,
+            description: location.name,
             type: "carpool",
           },
         }))
@@ -124,8 +124,6 @@ export const useHomeMapStore = defineStore("homeMap", () => {
         [Math.max(...lngList), Math.max(...latList)],
       ];
 
-      console.log(bounds);
-
       return bounds;
     } else {
       return [
@@ -137,17 +135,13 @@ export const useHomeMapStore = defineStore("homeMap", () => {
 
   const testFunction = () => {
     // fitBounds is breaking the page!!!
-    console.log("start testfunction");
     const bbox: LngLatBoundsLike = [
       [-79, 43],
       [-73, 45],
     ];
-    console.log("right before fitBounds");
     mapInstance.value!.fitBounds(bbox, {
       padding: { top: 10, bottom: 25, left: 15, right: 5 },
     });
-
-    console.log("fitBounds finished");
   };
 
   const updateMapData = (types: string[]) => {

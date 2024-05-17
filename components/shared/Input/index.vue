@@ -5,23 +5,31 @@ const props = defineProps<{
   type?: string;
   placeholder?: string;
   width?: string;
-  autocomplete?: string;
+  value?: string | number;
+  disabled?: boolean;
+  min?: number;
+  id?: string;
 }>();
-
-const handleInput = () => {};
 </script>
 
 <template>
-  <div class="flex flex-col" :style="{ width: width ?? '100%' }">
-    <label v-if="label" :for="name" class="label">
+  <div
+    class="flex flex-col gap-2 font-sm"
+    :style="{ 'max-width': width ?? '100%' }"
+  >
+    <label v-if="label" :for="name" class="label subtle">
       {{ label }}
     </label>
     <input
       :type="type ?? 'text'"
       :name="name"
       :placeholder="placeholder"
-      class="input"
-      @input="handleInput"
+      :value="value"
+      :disabled="disabled"
+      :id="id"
+      class="input w-full"
+      :min="min"
+      autocomplete="off"
     />
   </div>
 </template>
@@ -30,7 +38,11 @@ const handleInput = () => {};
 .input {
   background-color: var(--beige);
   border-radius: 0.5rem;
-  padding: 0.25rem;
-  margin: 0.5rem 0;
+  padding: 0.25rem 0.5rem;
+}
+
+.input::placeholder {
+  color: var(--lavender);
+  font-style: italic;
 }
 </style>

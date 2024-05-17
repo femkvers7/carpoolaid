@@ -8,42 +8,48 @@ const props = defineProps({
   },
 });
 
-const indexStore = useIndexStore();
-const homeMapStore = useHomeMapStore();
+const emit = defineEmits(["editLocation"]);
 
-const { isLoading } = storeToRefs(indexStore);
+const homeMapStore = useHomeMapStore();
 const { carpoolLocations, routes } = storeToRefs(homeMapStore);
 
-const editLocation = ref(false);
-
-const toggleEditLocation = (e: Event) => {
-  e.preventDefault();
-  editLocation.value = !editLocation.value;
-};
+const homeFormStore = useHomeFormStore();
 
 const deleteLocation = (e: Event) => {
   e.preventDefault();
-  isLoading.value = true;
 
-  carpoolLocations.value = carpoolLocations.value.filter(
-    (loc) => loc.id !== props.location.id,
-  );
-
-  routes.value = routes.value.filter(
-    (route: Route) => route.carpoolId !== props.location.id,
-  );
+  homeFormStore.deleteLocation(props.location.id);
 
   homeMapStore.updateMapData(["markers", "routes"]);
-  isLoading.value = false;
+};
+
+const toggleEditLocation = () => {
+  homeFormStore.onEdit(props.location);
 };
 </script>
 
 <template>
-  <div class="flex justify-between">
-    <p>{{ location.label }}</p>
-    <div class="flex gap-3">
-      <button @click="toggleEditLocation">Edit</button>
-      <button @click="deleteLocation">Remove</button>
+  <div class="flex justify-between items-center mt-1">
+    <p class="flex items-center gap-2">
+      {{ location.name ?? location.address.place }}
+      <span v-if="location.carSeats">
+        - {{ location.carSeats }} x
+        <Icon
+          fill="none"
+          size="16px"
+          width="25"
+          height="16"
+          name="seats"
+          class="block"
+      /></span>
+    </p>
+    <div class="flex gap-3 items-center">
+      <Button variant="neutral" @click="toggleEditLocation">
+        <Icon fill="var(--purple)" size="16px" name="pencil-square" />
+      </Button>
+      <Button variant="neutral" @click="deleteLocation">
+        <Icon fill="var(--purple)" size="16px" name="cross" />
+      </Button>
     </div>
   </div>
 </template>

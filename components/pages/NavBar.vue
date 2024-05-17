@@ -35,7 +35,7 @@ const toggleSidebar = () => {
 
 <style scoped lang="scss">
 nav {
-  padding: 1.25rem 1.5rem;
+  padding: 1rem 1.5rem;
   background-color: var(--green);
   border-radius: 1rem;
   position: relative;
@@ -60,8 +60,8 @@ nav {
     .profile {
       background-color: var(--beige);
       border-radius: 50%;
-      width: 3rem;
-      height: 3rem;
+      width: 2.5rem;
+      height: 2.5rem;
     }
   }
 }

@@ -26,7 +26,7 @@ const resolveIconComponent = () => {
   if (matchedSvg) {
     // Modify SVG content to include the 'fill' color
     dynamicSvgContent.value = matchedSvg.default
-      .replace(/fill="[^"]*"/g, "") // Remove all fill attributes
+    .replace(/fill="[^"]*"/g, "") // Remove all fill attributes
       .replace(
         /<svg([^>]+)>/,
         `<svg$1 fill="${props.fill}" width="100%" height="100%">`,

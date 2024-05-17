@@ -96,18 +96,14 @@ const calculateGroups = (overlaps: Overlaps) => {
   const groups: Suggestion[] = [];
 
   while (overlaps && Object.keys(overlaps).length > 0) {
-    console.log(overlaps, "overlaps");
     const maxOverlap = calculateMaxOverlap(overlaps);
-    console.log(maxOverlap, "maxOverlap");
 
     if (maxOverlap.value > 20000) {
       const groupAlreadyExists = groups.find((group) => {
         if (group.includes(maxOverlap.routeId2)) {
-          console.log("group with routeId2");
           group.push(maxOverlap.routeId1);
 
           if (group.length >= 4) {
-            console.log("group is full");
             // delete it as an option from all overlaps
             for (const route in overlaps) {
               for (const assignedRoute of group) {
@@ -121,17 +117,11 @@ const calculateGroups = (overlaps: Overlaps) => {
       });
 
       if (!groupAlreadyExists) {
-        console.log("group does not exist");
         groups.push([maxOverlap.routeId1]);
-        console.log(groups, "groups");
       }
 
       delete overlaps[maxOverlap.routeId1];
-      console.log("one overlap deleted");
     }
-
-    console.log("groups", groups);
-    console.log("overlaps", overlaps);
   }
 
   return groups;

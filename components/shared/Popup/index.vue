@@ -20,7 +20,7 @@ const props = defineProps<{
 aside {
   background-color: var(--white);
   margin-top: 1rem;
-  padding: 1.5rem;
+  padding: 1.25rem;
   border-radius: 1rem;
 }
 </style>

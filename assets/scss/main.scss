@@ -15,3 +15,27 @@ main {
 .loading {
   cursor: wait;
 }
+
+/* Scrollbar styling */
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+  border-radius: 1rem;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 1rem;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 1rem;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
