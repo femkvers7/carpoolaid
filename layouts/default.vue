@@ -13,3 +13,5 @@ const { isLoading } = storeToRefs(indexStore);
     </main>
   </VFragment>
 </template>
+
+<style scoped lang="scss"></style>

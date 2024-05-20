@@ -2,24 +2,25 @@
 const props = defineProps<{
   width?: string;
   height?: string;
+  ratio?: string;
 }>();
 </script>
 
 <template>
-  <aside
+  <div
+    class="popup"
     :style="{
       width: width ?? '100%',
       height: height ?? '100%',
     }"
   >
     <slot />
-  </aside>
+  </div>
 </template>
 
-<style>
-aside {
+<style scoped lang="scss">
+.popup {
   background-color: var(--white);
-  margin-top: 1rem;
   padding: 1.25rem;
   border-radius: 1rem;
 }

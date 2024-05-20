@@ -45,13 +45,12 @@ mapboxgl.accessToken = MAPBOX_API_KEY;
           <p>Choose your carpool locations</p>
         </div>
         <div v-if="destinationLocation">
-          <CarpoolInput :initial-value="editValue" />
+          <CarpoolInput />
           <div class="mt-4 carpool-list">
             <CarpoolAddress
               v-for="location in carpoolLocations"
               :key="location.id"
               :location="location"
-              @edit-location="onEditLocation"
             />
           </div>
           <!-- with initial value

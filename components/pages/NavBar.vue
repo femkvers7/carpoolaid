@@ -1,36 +1,90 @@
 <script setup lang="ts">
+import { logoutUser } from "~/modules/api/auth";
+
 const indexStore = useIndexStore();
 const { showSidebar } = storeToRefs(indexStore);
+
+// check if logged in
+const jwt = useCookie("sb-access-token");
+const isLoggedIn = computed(() => !!jwt.value);
 
 const toggleSidebar = () => {
   showSidebar.value = !showSidebar.value;
 };
+
+const props = defineProps({
+  showHamburger: {
+    type: Boolean,
+    default: true,
+  },
+  showProfile: {
+    type: Boolean,
+    default: true,
+  },
+});
+
+const showProfileMenu = ref(false);
+
+const handleLogout = () => {
+  logoutUser();
+  showProfileMenu.value = false;
+};
 </script>
 
 <template>
-  <nav>
-    <ul>
-      <li>
-        <button class="hamburger" @click="toggleSidebar">
-          <Icon
-            fill="var(--beige)"
-            size="32px"
-            height="19px"
-            name="hamburger-menu"
-          />
-        </button>
-      </li>
-      <li>
-        <h1 class="title"><nuxt-link to="/">CarpoolAid</nuxt-link></h1>
-      </li>
-      <li>
-        <!-- This will probably become a component with hover or click functionality -->
-        <button class="profile">
-          <Icon fill="var(--purple)" size="28px" name="person" />
-        </button>
-      </li>
-    </ul>
-  </nav>
+  <VFragment>
+    <nav>
+      <ul>
+        <li class="flex justify-center content-center">
+          <button
+            v-show="showHamburger"
+            class="hamburger"
+            @click="toggleSidebar"
+          >
+            <Icon
+              fill="var(--beige)"
+              size="32px"
+              height="19px"
+              name="hamburger-menu"
+            />
+          </button>
+        </li>
+        <li class="title">
+          <h1><nuxt-link to="/">CarpoolAid</nuxt-link></h1>
+        </li>
+        <li v-if="isLoggedIn">
+          <!-- This will probably become a component with hover or click functionality -->
+          <button
+            v-show="showProfile"
+            class="profile"
+            @click="showProfileMenu = !showProfileMenu"
+          >
+            <Icon fill="var(--purple)" size="28px" name="person" />
+          </button>
+        </li>
+        <li v-if="!isLoggedIn">
+          <Button
+            v-show="showProfile"
+            variant="secondary"
+            @click="$router.push('/auth/login')"
+            >Login</Button
+          >
+        </li>
+      </ul>
+    </nav>
+    <Popup
+      v-show="showProfileMenu"
+      class="profile-menu"
+      width="10rem"
+      height="auto"
+    >
+      <ul>
+        <li>Profile</li>
+        <li>Settings</li>
+        <li @click="handleLogout">Logout</li>
+      </ul>
+    </Popup>
+  </VFragment>
 </template>
 
 <style scoped lang="scss">
@@ -44,8 +98,9 @@ nav {
   ul {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    height: 2.5rem;
 
     button {
       display: flex;
@@ -55,6 +110,9 @@ nav {
 
     .title {
       color: var(--beige);
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
     }
 
     .profile {
@@ -62,6 +120,28 @@ nav {
       border-radius: 50%;
       width: 2.5rem;
       height: 2.5rem;
+    }
+  }
+}
+
+.profile-menu {
+  position: absolute;
+  right: 1rem;
+  top: 6rem;
+  z-index: 200;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    li:not(:last-child) {
+      border-bottom: 1px solid var(--purple);
+    }
+    li {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      text-align: center;
     }
   }
 }

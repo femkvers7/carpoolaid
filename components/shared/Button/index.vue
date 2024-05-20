@@ -1,23 +1,23 @@
 <script setup lang="ts">
 const props = withDefaults(
   defineProps<{
-    disabled: boolean;
+    disabled?: boolean;
     variant: string;
     width?: string;
+    type?: "button" | "submit" | "reset";
   }>(),
   { disabled: false, variant: "primary" },
 );
-defineEmits(["submit"]);
 </script>
 
 <template>
   <button
-    :disabled
+    :disabled="disabled"
     :style="{
       width: width ?? 'fit-content',
     }"
     :class="`button button--${variant} flex items-center justify-center`"
-    @click.prevent="$emit('submit')"
+    :type="type ?? 'button'"
   >
     <slot> Submit</slot>
   </button>
@@ -48,6 +48,7 @@ defineEmits(["submit"]);
   background-color: transparent;
   color: var(--red);
   text-decoration: underline;
+  padding: 0;
 }
 
 .button--neutral {
