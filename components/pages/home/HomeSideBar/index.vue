@@ -1,21 +1,48 @@
 <script setup lang="ts">
 import mapboxgl from "mapbox-gl";
-
-useHead({
-  script: [
-    {
-      src: "https://api.mapbox.com/search-js/v1.0.0-beta.21/web.js",
-      id: "search-js",
-      defer: "",
-    },
-  ],
-});
+import Papa from "papaparse";
 
 const homeMapStore = useHomeMapStore();
 const { destinationLocation, carpoolLocations } = storeToRefs(homeMapStore);
 
+const homeCsvStore = useHomeCsvStore();
+
 const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
 mapboxgl.accessToken = MAPBOX_API_KEY;
+
+// check if logged in
+const jwt = useCookie("sb-access-token");
+const isLoggedIn = computed(() => !!jwt.value);
+
+const handleFileUpload = (event: Event) => {
+  const uploadedFile = (event.target as HTMLInputElement).files?.[0] || null;
+
+  console.log("file upload", uploadedFile);
+
+  if (!uploadedFile) {
+    return;
+  }
+
+  Papa.parse(uploadedFile, {
+    header: true,
+    skipEmptyLines: true,
+    complete: (results: any) => {
+      // what to do after parsing file?
+      console.log(results);
+
+      homeCsvStore.$patch({
+        headers: results.meta.fields,
+        rows: results.data,
+        showColumnPopup: true,
+      });
+    },
+  });
+};
+
+const handleReset = () => {
+  homeMapStore.reset();
+  homeCsvStore.reset();
+};
 </script>
 
 <template>
@@ -26,10 +53,21 @@ mapboxgl.accessToken = MAPBOX_API_KEY;
   >
     <div class="flex justify-between items-center mb-4">
       <p class="text-lg">Your trip</p>
-
-      <Button variant="neutral">
-        <Icon fill="var(--purple)" size="16px" name="floppy" />
-      </Button>
+      <div class="flex gap-3">
+        <Tooltip content="Reset" position="left">
+          <Button variant="neutral" @click="handleReset">
+            <Icon fill="var(--purple)" size="16px" name="reset" />
+          </Button>
+        </Tooltip>
+        <Tooltip
+          :content="isLoggedIn ? 'Save' : 'Log in to save trip'"
+          position="left"
+        >
+          <Button :variant="isLoggedIn ? 'neutral' : 'disabled'">
+            <Icon fill="var(--purple)" size="16px" name="floppy" />
+          </Button>
+        </Tooltip>
+      </div>
     </div>
     <div class="manual-input">
       <div class="destination">
@@ -53,23 +91,7 @@ mapboxgl.accessToken = MAPBOX_API_KEY;
               :location="location"
             />
           </div>
-          <!-- with initial value
-        <CarpoolInput
-          :initial-values="{
-            id: '7d30d02c-a636-4d6c-b338-acc7d1427f98',
-            coordinates: [3.7250121, 51.0538286],
-            address: {
-              country: 'Belgium',
-              place: 'Gent',
-              street: '',
-              address_number: '',
-            },
-            name: '',
-            carAvailable: true,
-            carSeats: 4,
-          }"
-        />
-        --></div>
+        </div>
         <span v-else class="subtle italic">
           Please select a destination to continue
         </span>
@@ -80,12 +102,19 @@ mapboxgl.accessToken = MAPBOX_API_KEY;
       class="m-auto italic"
       >or</span
     >
-    <div
-      v-show="destinationLocation && !carpoolLocations.length"
-      class="upload-csv flex flex-col items-center"
-    >
-      <Icon fill="var(--lavender)" size="48px" name="upload" />
-      <Button variant="tertiary">Upload CSV</Button>
+    <div v-show="destinationLocation && !carpoolLocations.length">
+      <label class="flex flex-col items-center cursor-pointer">
+        <input
+          type="file"
+          accept=".csv"
+          name="upload_csv"
+          class="hidden"
+          @click="$event.target.value = ''"
+          @change="handleFileUpload"
+        />
+        <Icon fill="var(--lavender)" size="48px" name="upload" />
+        <div variant="tertiary" class="upload_csv__button-text">Upload CSV</div>
+      </label>
     </div>
     <Button
       v-show="destinationLocation && carpoolLocations?.length > 1"
@@ -110,5 +139,10 @@ mapboxgl.accessToken = MAPBOX_API_KEY;
   padding-right: 0.5rem;
   max-height: calc(100vh - 36rem);
   overflow-y: auto;
+}
+
+.upload_csv__button-text {
+  color: var(--red);
+  text-decoration: underline;
 }
 </style>

@@ -2,6 +2,14 @@
 import { useIndexStore } from "~/stores";
 const indexStore = useIndexStore();
 const { showSidebar } = storeToRefs(indexStore);
+
+const homeCsvStore = useHomeCsvStore();
+const { showColumnPopup, showPreviewPopup } = storeToRefs(homeCsvStore);
+
+const closePopups = () => {
+  showColumnPopup.value = false;
+  showPreviewPopup.value = false;
+};
 </script>
 
 <template>
@@ -10,6 +18,8 @@ const { showSidebar } = storeToRefs(indexStore);
       <HomeSideBar v-if="showSidebar" class="sidebar mt-4" />
     </Transition>
     <Map class="map" />
+    <ColumnPopup v-if="showColumnPopup" @close="closePopups" />
+    <PreviewPopup v-if="showPreviewPopup" @close="closePopups" />
   </VFragment>
 </template>
 

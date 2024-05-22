@@ -1,6 +1,6 @@
-export const registerUser = async (email: string, password: string) => {
-  const supabase = useSupabaseClient();
+const supabase = useSupabaseClient();
 
+export const registerUser = async (email: string, password: string) => {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -13,8 +13,6 @@ export const registerUser = async (email: string, password: string) => {
 };
 
 export const loginUser = async (email: string, password: string) => {
-  const supabase = useSupabaseClient();
-
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -26,8 +24,6 @@ export const loginUser = async (email: string, password: string) => {
 };
 
 export const logoutUser = async () => {
-  const supabase = useSupabaseClient();
-
   const { error } = await supabase.auth.signOut();
 
   console.log("loggedOut", error);

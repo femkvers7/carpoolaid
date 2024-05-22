@@ -11,7 +11,6 @@ const props = defineProps({
 const emit = defineEmits(["editLocation"]);
 
 const homeMapStore = useHomeMapStore();
-const { carpoolLocations, routes } = storeToRefs(homeMapStore);
 
 const homeFormStore = useHomeFormStore();
 
@@ -31,7 +30,7 @@ const toggleEditLocation = () => {
 <template>
   <div class="flex justify-between items-center mt-1">
     <p class="flex items-center gap-2">
-      {{ location.name ?? location.address.place }}
+      {{ location.name ?? location.label ?? location.address.place }}
       <span v-if="location.carSeats">
         - {{ location.carSeats }} x
         <Icon

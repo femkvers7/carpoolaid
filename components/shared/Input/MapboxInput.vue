@@ -10,6 +10,12 @@ useHead({
       defer: "",
     },
   ],
+  link: [
+    {
+      rel: "stylesheet",
+      href: "https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css",
+    },
+  ],
 });
 
 const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
@@ -58,6 +64,15 @@ const onRetrieve = (event: any) => {
       'locality',
       'neighborhood',
     ]"
+    @retrieve="onRetrieve"
+    @input.prevent
+  >
+  </mapbox-search-box>
+  <!--  :value="initialAddress" -> crashes app bc search field doesn't exist on launch, somehow 
+    problemen voor later
+  -->
+  <!--
+    Styling is causing trouble on render:
     :theme="{
       variables: {
         colorBackground: 'var(--beige)',
@@ -67,11 +82,5 @@ const onRetrieve = (event: any) => {
         fontFamily: 'Montserrat, sans-serif',
       },
     }"
-    @retrieve="onRetrieve"
-    @input.prevent
-  >
-  </mapbox-search-box>
-  <!--  :value="initialAddress" -> crashes app bc search field doesn't exist on launch, somehow 
-    problemen voor later
   -->
 </template>

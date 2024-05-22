@@ -4,6 +4,7 @@ export type Location = {
   name?: string;
   carSeats?: number;
   address: LocationAddress;
+  label?: string;
 };
 
 export type LocationAddress = {

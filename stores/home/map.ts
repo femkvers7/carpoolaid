@@ -157,6 +157,13 @@ export const useHomeMapStore = defineStore("homeMap", () => {
     }
   };
 
+  const reset = () => {
+    destinationLocation.value = null;
+    carpoolLocations.value = [];
+    routes.value = [];
+    suggestions.value = [];
+  };
+
   return {
     destinationLocation,
     carpoolLocations,
@@ -169,5 +176,6 @@ export const useHomeMapStore = defineStore("homeMap", () => {
     updateRoutes,
     updateMapData,
     testFunction,
+    reset,
   };
 });
