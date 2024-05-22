@@ -5,7 +5,7 @@
     @mouseover="showTooltip"
     @mouseleave="hideTooltip"
   >
-    <slot></slot>
+    <slot />
     <div v-if="visible" class="tooltip-content" :class="positionClass">
       {{ content }}
     </div>

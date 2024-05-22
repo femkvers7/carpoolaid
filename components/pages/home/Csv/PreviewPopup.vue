@@ -8,8 +8,6 @@ const { showColumnPopup, showPreviewPopup, previewColumns, rows } =
 const homeMapStore = useHomeMapStore();
 const { destinationLocation, carpoolLocations } = storeToRefs(homeMapStore);
 
-console.log("previewColumns", previewColumns.value);
-
 const preview = rows.value.slice(0, 5);
 
 const postcodeWarning = computed(() => {
@@ -70,8 +68,6 @@ const handleClickNext = async () => {
       return newEntry;
     });
   }
-
-  console.log(extendedData.value, "extendedData");
 
   carpoolLocations.value = extendedData.value;
 

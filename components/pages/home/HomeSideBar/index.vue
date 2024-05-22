@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import mapboxgl from "mapbox-gl";
-import Papa from "papaparse";
 
 const homeMapStore = useHomeMapStore();
 const { destinationLocation, carpoolLocations } = storeToRefs(homeMapStore);
@@ -14,34 +13,13 @@ mapboxgl.accessToken = MAPBOX_API_KEY;
 const jwt = useCookie("sb-access-token");
 const isLoggedIn = computed(() => !!jwt.value);
 
-const handleFileUpload = (event: Event) => {
-  const uploadedFile = (event.target as HTMLInputElement).files?.[0] || null;
-
-  console.log("file upload", uploadedFile);
-
-  if (!uploadedFile) {
-    return;
-  }
-
-  Papa.parse(uploadedFile, {
-    header: true,
-    skipEmptyLines: true,
-    complete: (results: any) => {
-      // what to do after parsing file?
-      console.log(results);
-
-      homeCsvStore.$patch({
-        headers: results.meta.fields,
-        rows: results.data,
-        showColumnPopup: true,
-      });
-    },
-  });
-};
-
 const handleReset = () => {
   homeMapStore.reset();
   homeCsvStore.reset();
+};
+
+const generateCarpoolPlan = () => {
+  // generate carpool plan
 };
 </script>
 
@@ -56,15 +34,19 @@ const handleReset = () => {
       <div class="flex gap-3">
         <Tooltip content="Reset" position="left">
           <Button variant="neutral" @click="handleReset">
-            <Icon fill="var(--purple)" size="16px" name="reset" />
+            <Icon fill="var(--purple)" size="16px" name="eraser" />
           </Button>
         </Tooltip>
         <Tooltip
           :content="isLoggedIn ? 'Save' : 'Log in to save trip'"
           position="left"
         >
-          <Button :variant="isLoggedIn ? 'neutral' : 'disabled'">
-            <Icon fill="var(--purple)" size="16px" name="floppy" />
+          <Button variant="neutral" :disabled="!isLoggedIn">
+            <Icon
+              :fill="isLoggedIn ? 'var(--purple)' : 'var(--lavender)'"
+              size="16px"
+              name="floppy"
+            />
           </Button>
         </Tooltip>
       </div>
@@ -102,24 +84,12 @@ const handleReset = () => {
       class="m-auto italic"
       >or</span
     >
-    <div v-show="destinationLocation && !carpoolLocations.length">
-      <label class="flex flex-col items-center cursor-pointer">
-        <input
-          type="file"
-          accept=".csv"
-          name="upload_csv"
-          class="hidden"
-          @click="$event.target.value = ''"
-          @change="handleFileUpload"
-        />
-        <Icon fill="var(--lavender)" size="48px" name="upload" />
-        <div variant="tertiary" class="upload_csv__button-text">Upload CSV</div>
-      </label>
-    </div>
+    <UploadCsvButton v-show="destinationLocation && !carpoolLocations.length" />
     <Button
       v-show="destinationLocation && carpoolLocations?.length > 1"
       variant="primary"
       class="mx-auto mt-auto mb-3"
+      @click="generateCarpoolPlan"
     >
       Generate Carpoolplan
     </Button>
@@ -139,10 +109,5 @@ const handleReset = () => {
   padding-right: 0.5rem;
   max-height: calc(100vh - 36rem);
   overflow-y: auto;
-}
-
-.upload_csv__button-text {
-  color: var(--red);
-  text-decoration: underline;
 }
 </style>

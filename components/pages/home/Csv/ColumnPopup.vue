@@ -19,7 +19,6 @@ const toggleCheck = (type: string) => {
       columnNames.value[type] = "";
     }
   }
-  console.log(columnNames.value);
 };
 
 const handleClickNext = () => {
