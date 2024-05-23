@@ -6,6 +6,8 @@ const { showSidebar } = storeToRefs(indexStore);
 const homeCsvStore = useHomeCsvStore();
 const { showColumnPopup, showPreviewPopup } = storeToRefs(homeCsvStore);
 
+const showSuggestions = true;
+
 const closePopups = () => {
   showColumnPopup.value = false;
   showPreviewPopup.value = false;
@@ -17,6 +19,7 @@ const closePopups = () => {
     <Transition name="slide-fade">
       <HomeSideBar v-if="showSidebar" class="sidebar mt-4" />
     </Transition>
+    <SuggestionsContainer v-if="showSuggestions" class="suggestions" />
     <Map class="map" />
     <ColumnPopup v-if="showColumnPopup" @close="closePopups" />
     <PreviewPopup v-if="showPreviewPopup" @close="closePopups" />
@@ -35,6 +38,13 @@ const closePopups = () => {
 
 .sidebar {
   position: relative;
+  z-index: 2;
+}
+
+.suggestions {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
   z-index: 2;
 }
 

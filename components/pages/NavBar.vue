@@ -52,21 +52,16 @@ const handleLogout = () => {
         <li class="title">
           <h1><nuxt-link to="/">CarpoolAid</nuxt-link></h1>
         </li>
-        <li v-if="isLoggedIn">
-          <!-- This will probably become a component with hover or click functionality -->
-          <button
-            v-show="showProfile"
-            class="profile"
-            @click="showProfileMenu = !showProfileMenu"
-          >
+        <li v-if="isLoggedIn && showProfile" class="flex gap-4 content-center">
+          <Button variant="tertiary" class="saved-trips flex gap-2">
+            Saved trips
+          </Button>
+          <button class="profile" @click="showProfileMenu = !showProfileMenu">
             <Icon fill="var(--purple)" size="28px" name="person" />
           </button>
         </li>
-        <li v-if="!isLoggedIn">
-          <Button
-            v-show="showProfile"
-            variant="secondary"
-            @click="$router.push('/auth/login')"
+        <li v-if="!isLoggedIn && showProfile">
+          <Button variant="secondary" @click="$router.push('/auth/login')"
             >Login</Button
           >
         </li>
@@ -113,6 +108,10 @@ nav {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
+    }
+
+    .saved-trips {
+      color: var(--beige);
     }
 
     .profile {

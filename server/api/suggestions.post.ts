@@ -60,8 +60,8 @@ const calculateOverlapMatrix = async (
           destination.coordinates,
         );
         if (overlap > 20000) {
-          overlaps[route1.id] = overlaps[route1.id] || {};
-          overlaps[route1.id][route2.id] = overlap;
+          overlaps[route1.carpoolId] = overlaps[route1.carpoolId] || {};
+          overlaps[route1.carpoolId][route2.carpoolId] = overlap;
         }
       }
     }
@@ -73,17 +73,17 @@ const calculateOverlapMatrix = async (
 const calculateMaxOverlap = (overlaps: Overlaps) => {
   let max = {
     value: Number.MIN_VALUE,
-    routeId1: "",
-    routeId2: "",
+    carpoolId1: "",
+    carpoolId2: "",
   };
 
-  for (const routeId1 in overlaps) {
-    for (const routeId2 in overlaps[routeId1]) {
-      if (overlaps[routeId1][routeId2] > max.value) {
+  for (const carpoolId1 in overlaps) {
+    for (const carpoolId2 in overlaps[carpoolId1]) {
+      if (overlaps[carpoolId1][carpoolId2] > max.value) {
         max = {
-          value: overlaps[routeId1][routeId2],
-          routeId1,
-          routeId2,
+          value: overlaps[carpoolId1][carpoolId2],
+          carpoolId1,
+          carpoolId2,
         };
       }
     }
@@ -100,14 +100,14 @@ const calculateGroups = (overlaps: Overlaps) => {
 
     if (maxOverlap.value > 20000) {
       const groupAlreadyExists = groups.find((group) => {
-        if (group.includes(maxOverlap.routeId2)) {
-          group.push(maxOverlap.routeId1);
+        if (group.includes(maxOverlap.carpoolId2)) {
+          group.push(maxOverlap.carpoolId1);
 
           if (group.length >= 4) {
             // delete it as an option from all overlaps
-            for (const route in overlaps) {
+            for (const carpool in overlaps) {
               for (const assignedRoute of group) {
-                delete overlaps[route][assignedRoute];
+                delete overlaps[carpool][assignedRoute];
               }
             }
           }
@@ -117,10 +117,10 @@ const calculateGroups = (overlaps: Overlaps) => {
       });
 
       if (!groupAlreadyExists) {
-        groups.push([maxOverlap.routeId1]);
+        groups.push([maxOverlap.carpoolId1]);
       }
 
-      delete overlaps[maxOverlap.routeId1];
+      delete overlaps[maxOverlap.carpoolId1];
     }
   }
 
@@ -136,5 +136,5 @@ export default defineEventHandler(async (event) => {
 
   const groups = calculateGroups(overlaps);
 
-  return groups;
+  return groups; // carpool location ids
 });

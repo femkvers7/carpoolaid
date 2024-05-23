@@ -63,6 +63,7 @@ const onRetrieve = (event: any) => {
       'place',
       'locality',
       'neighborhood',
+      'poi',
     ]"
     @retrieve="onRetrieve"
     @input.prevent

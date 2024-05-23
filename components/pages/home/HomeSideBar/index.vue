@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import mapboxgl from "mapbox-gl";
+import { useHomeSuggestionsStore } from "~/stores/home/suggestions";
 
 const homeMapStore = useHomeMapStore();
-const { destinationLocation, carpoolLocations } = storeToRefs(homeMapStore);
+const { destinationLocation, carpoolLocations, routes } =
+  storeToRefs(homeMapStore);
 
 const homeCsvStore = useHomeCsvStore();
+
+const homeSuggestionsStore = useHomeSuggestionsStore();
+const { suggestions } = storeToRefs(homeSuggestionsStore);
 
 const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
 mapboxgl.accessToken = MAPBOX_API_KEY;
@@ -16,10 +21,23 @@ const isLoggedIn = computed(() => !!jwt.value);
 const handleReset = () => {
   homeMapStore.reset();
   homeCsvStore.reset();
+  homeSuggestionsStore.reset();
 };
 
-const generateCarpoolPlan = () => {
+const generateCarpoolPlan = async () => {
   // generate carpool plan
+  const carpoolPlan = await $fetch("/api/suggestions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: {
+      destination: destinationLocation.value,
+      routes: routes.value,
+    },
+  });
+
+  suggestions.value = carpoolPlan;
 };
 </script>
 
