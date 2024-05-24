@@ -34,14 +34,8 @@ export default defineEventHandler(async (event) => {
     return {
       id: uuidv4(),
       coordinates: locationFeatures.geometry.coordinates as number[],
-      label: locationFeatures.properties.context.place?.name ?? "Carpool",
-      address: {
-        country: locationFeatures.properties.context.country?.name ?? "",
-        place: locationFeatures.properties.context.place?.name ?? "",
-        street: locationFeatures.properties.context.street?.name ?? "",
-        address_number:
-          locationFeatures.properties.context.address?.address_number ?? "",
-      },
+      place: locationFeatures.properties.context.place?.name,
+      carSeats: 4,
     };
   });
 

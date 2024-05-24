@@ -11,7 +11,7 @@ const {
 const toggleCheck = (type: string) => {
   //columnChecks.value[type] = !columnChecks.value[type];
 
-  if (!columnChecks.value[type]) {
+  if (columnChecks.value[type]) {
     if (type === "shift") {
       columnNames.value.startTime = "";
       columnNames.value.endTime = "";

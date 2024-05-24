@@ -30,7 +30,7 @@ const toggleEditLocation = () => {
 <template>
   <div class="flex justify-between items-center mt-1">
     <p class="flex items-center gap-2">
-      {{ location.name ?? location.label ?? location.address.place }}
+      {{ location.name ?? location.place }}
       <span v-if="location.carSeats">
         - {{ location.carSeats }} x
         <Icon

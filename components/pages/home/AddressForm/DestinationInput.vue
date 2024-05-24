@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Location } from "~/types/Location";
+import type { Location, MapboxLocation } from "~/types/Location";
 
 const indexStore = useIndexStore();
 const homeMapStore = useHomeMapStore();
@@ -9,10 +9,10 @@ const { destinationLocation, carpoolLocations } = storeToRefs(homeMapStore);
 
 const editDestination = ref<boolean>(false);
 
-const onRetrieveDestinationLocation = async (location: Location) => {
+const onRetrieveDestinationLocation = async (location: MapboxLocation) => {
   isLoading.value = true;
 
-  destinationLocation.value = { ...location, name: location.address.place };
+  destinationLocation.value = location;
 
   if (editDestination.value || carpoolLocations.value.length > 0) {
     await homeMapStore.updateRoutes();
@@ -37,7 +37,7 @@ const toggleEditDestination = (e: Event) => {
       v-if="!!destinationLocation && editDestination == false"
       class="flex justify-between content-end my-2"
     >
-      <p>{{ destinationLocation?.name }}</p>
+      <p>{{ destinationLocation.place }}</p>
       <button class="flex items-center" @click="toggleEditDestination">
         <Icon fill="var(--purple)" size="16px" name="pencil-square" />
       </button>

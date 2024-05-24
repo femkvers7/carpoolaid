@@ -21,9 +21,10 @@ export const useHomeFormStore = defineStore("homeForm", () => {
       "location-input",
     ) as HTMLInputElement;
 
-    const initialAddress = `${location?.address.street ?? ""} ${location?.address.address_number ?? ""} ${location?.address.place ?? ""} ${location?.address.postcode ?? ""} ${location?.address.country ?? ""}`;
+    // have to redo, geocode from coordinates (or use place name?)
+    //const initialAddress = `${location?.address.street ?? ""} ${location?.address.address_number ?? ""} ${location?.address.place ?? ""} ${location?.address.postcode ?? ""} ${location?.address.country ?? ""}`;
 
-    mapInput.value = initialAddress;
+    //mapInput.value = initialAddress;
 
     deleteLocation(location.id);
   };

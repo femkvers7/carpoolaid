@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Location } from "~/types/Location";
+import type { Location, MapboxLocation } from "~/types/Location";
 const homeFormStore = useHomeFormStore();
 const { formValues, isEditing } = storeToRefs(homeFormStore);
 
@@ -7,8 +7,11 @@ const homeMapStore = useHomeMapStore();
 const { carpoolLocations, destinationLocation, routes } =
   storeToRefs(homeMapStore);
 
-const onRetrieveCarpoolLocation = (location: Location) => {
-  formValues.value = { ...formValues.value, ...location };
+const onRetrieveCarpoolLocation = (location: MapboxLocation) => {
+  formValues.value = {
+    ...formValues.value,
+    ...location,
+  };
 };
 
 const onSubmit = async () => {

@@ -34,13 +34,7 @@ const onRetrieve = (event: any) => {
   const location: Location = {
     id: uuidv4(),
     coordinates: locationFeatures.geometry.coordinates as number[],
-    address: {
-      country: locationFeatures.properties.context.country?.name ?? "Belgium",
-      place: locationFeatures.properties.context.place?.name ?? "",
-      street: locationFeatures.properties.context.street?.name ?? "",
-      address_number:
-        locationFeatures.properties.context.address?.address_number ?? "",
-    },
+    place: locationFeatures.properties.context.place?.name ?? "",
   };
 
   emit("retrieve", location);

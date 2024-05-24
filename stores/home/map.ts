@@ -30,7 +30,7 @@ export const useHomeMapStore = defineStore("homeMap", () => {
               coordinates: destinationLocation.value.coordinates,
             },
             properties: {
-              title: destinationLocation.value.address.place,
+              title: destinationLocation.value.place,
               description: "Destination",
               type: "destination",
             },
@@ -47,7 +47,7 @@ export const useHomeMapStore = defineStore("homeMap", () => {
           },
           properties: {
             title: "Carpool",
-            description: location.name,
+            description: location.name ?? location.place,
             type: "carpool",
           },
         }))
@@ -89,6 +89,7 @@ export const useHomeMapStore = defineStore("homeMap", () => {
     const route = {
       id: uuidv4(),
       carpoolId: carpool.id,
+      carSeats: carpool.carSeats ?? 4,
       destinationId: destination.id,
       distance: json.routes[0].distance,
       duration: json.routes[0].duration,

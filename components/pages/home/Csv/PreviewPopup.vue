@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Location } from "~/types/Location";
+import type { Location, MapboxLocation } from "~/types/Location";
 
 const csvStore = useHomeCsvStore();
 const { showColumnPopup, showPreviewPopup, previewColumns, rows } =
@@ -26,13 +26,13 @@ const rowsLeft = computed(() => {
 });
 
 const handleClickNext = async () => {
-  const carpoolBody = rows.value.map((result) => {
+  const carpoolBody = rows.value.map((row) => {
     return {
-      place: result["City"],
-      postcode: result["Postcode"],
-      street: result["Street"],
-      address_number: result["Address_number"],
-      country: result["Country"],
+      place: row["City"],
+      postcode: row["Postcode"],
+      street: row["Street"],
+      address_number: row["Address_number"],
+      country: row["Country"],
       limit: 1,
     };
   });
@@ -50,9 +50,11 @@ const handleClickNext = async () => {
 
   if (previewColumns.value.name || previewColumns.value.carAvailability) {
     extendedData.value = data.map((entry: Location, index: number) => {
-      const newEntry = { ...entry };
-
-      if (previewColumns.value.name) {
+      const newEntry = entry;
+      if (
+        previewColumns.value.name &&
+        rows.value[index][previewColumns.value.name]
+      ) {
         newEntry.name = rows.value[index][previewColumns.value.name];
       }
 
