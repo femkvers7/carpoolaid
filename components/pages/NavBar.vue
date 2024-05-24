@@ -53,7 +53,17 @@ const handleLogout = () => {
           <h1><nuxt-link to="/">CarpoolAid</nuxt-link></h1>
         </li>
         <li v-if="isLoggedIn && showProfile" class="flex gap-4 content-center">
-          <Button variant="tertiary" class="saved-trips flex gap-2">
+          <Button
+            variant="secondary"
+            class="saved-trips flex gap-2"
+            @click="$router.push('/profile/saved-trips')"
+          >
+            <Icon
+              fill="var(--purple)"
+              size="16px"
+              width="12px"
+              name="bookmark"
+            />
             Saved trips
           </Button>
           <button class="profile" @click="showProfileMenu = !showProfileMenu">
@@ -74,7 +84,7 @@ const handleLogout = () => {
       height="auto"
     >
       <ul>
-        <li>Profile</li>
+        <li><NuxtLink to="/profile">Profile</NuxtLink></li>
         <li>Settings</li>
         <li @click="handleLogout">Logout</li>
       </ul>
@@ -108,10 +118,6 @@ nav {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-    }
-
-    .saved-trips {
-      color: var(--beige);
     }
 
     .profile {

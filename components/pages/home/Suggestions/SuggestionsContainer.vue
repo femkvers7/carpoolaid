@@ -8,8 +8,8 @@ const { suggestions } = storeToRefs(homeSuggestionsStore);
 <template>
   <Popup
     height="10rem"
-    width="calc(100vw - 2rem - 1rem - 400px)"
-    class="flex flex-col content-center justify-start overflow-y-auto"
+    width="calc(100vw - 2rem - 1rem - 2rem - 400px)"
+    class="suggestions-container"
   >
     <SuggestionsGroup
       v-for="(group, index) in suggestions"
@@ -20,4 +20,13 @@ const { suggestions } = storeToRefs(homeSuggestionsStore);
   </Popup>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.suggestions-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  overflow-y: auto;
+  margin-right: 2rem;
+}
+</style>

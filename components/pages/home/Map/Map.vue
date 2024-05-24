@@ -21,7 +21,7 @@ const { mapInstance, markersGeoJSON, routesGeoJSON } =
 onMounted(() => {
   const map = new mapboxgl.Map({
     container: mapInstance.value,
-    style: "mapbox://styles/mapbox/streets-v11",
+    style: "mapbox://styles/mapbox/streets-v12",
     center: [4.266714, 50.964028],
     zoom: 8,
     language: "nl",

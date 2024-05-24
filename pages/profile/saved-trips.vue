@@ -1,17 +1,18 @@
 <script setup lang="ts">
+import SavedTripList from "~/components/pages/profile/SavedTrips/SavedTripList.vue";
 import { useProfileStore } from "../../stores/profile";
 
 definePageMeta({
-  title: "Profile",
+  title: "Saved Trips",
   layout: "profile",
 });
 
 const profileStore = useProfileStore();
 const { activeTab } = storeToRefs(profileStore);
 
-activeTab.value = "profile";
+activeTab.value = "saved-trips";
 </script>
 
 <template>
-  <div>this is the profile page</div>
+  <SavedTripList />
 </template>

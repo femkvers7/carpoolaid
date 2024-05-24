@@ -9,9 +9,9 @@ definePageMeta({
 const profileStore = useProfileStore();
 const { activeTab } = storeToRefs(profileStore);
 
-activeTab.value = "profile";
+activeTab.value = "settings";
 </script>
 
 <template>
-  <div>this is the profile page</div>
+  <div>settings</div>
 </template>
