@@ -7,13 +7,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div
-    class="popup"
-    :style="{
-      width: width ?? '100%',
-      height: height ?? '100%',
-    }"
-  >
+  <div class="popup">
     <slot />
   </div>
 </template>
@@ -21,7 +15,6 @@ const props = defineProps<{
 <style scoped lang="scss">
 .popup {
   background-color: var(--white);
-  padding: 1.25rem;
   border-radius: 1rem;
 }
 </style>

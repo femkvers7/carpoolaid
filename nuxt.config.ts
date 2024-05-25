@@ -2,7 +2,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       mapboxAccessToken:
-        "pk.eyJ1IjoiZmVta2V2ZXJzd2V5dmVsZGFydGV2ZWxkZSIsImEiOiJjbHZleDJtMWcwY2cyMmtwNXExbnN5ejAwIn0.doUbEAUPIhi7_pHM5VD6Uw",
+        "pk.eyJ1IjoiZmVta2V2ZXJzd2V5dmVsZCIsImEiOiJjbHZmbjBmdDIwbW0zMmpwNTB1c2JhcGlnIn0.9KUcnPP8agtNIdnrFH8lNw",
     },
   },
   modules: ["@nuxtjs/tailwindcss", "@pinia/nuxt", "@nuxtjs/supabase"],

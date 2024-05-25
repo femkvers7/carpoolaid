@@ -134,8 +134,7 @@ nav {
   right: 1rem;
   top: 6rem;
   z-index: 200;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding: 1rem 1rem;
 
   ul {
     display: flex;

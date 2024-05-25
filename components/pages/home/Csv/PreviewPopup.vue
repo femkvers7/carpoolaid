@@ -175,6 +175,7 @@ const handleClickBack = () => {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
+  padding: 1.5rem;
 
   text-align: center;
 

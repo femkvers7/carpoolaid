@@ -1,5 +1,5 @@
 export const useHomeSuggestionsStore = defineStore("homeSuggestions", () => {
-  const suggestions = ref<Suggestion[]>([]);
+  const suggestions = ref<SuggestionGroup[]>([]);
 
   const reset = () => {
     suggestions.value = [];

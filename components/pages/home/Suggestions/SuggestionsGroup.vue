@@ -1,68 +1,84 @@
 <script setup lang="ts">
 const props = defineProps<{
-  group: string[];
+  group: SuggestionGroup;
   number: number;
 }>();
 
-const localGroup = ref(props.group);
-
 const homeMapStore = useHomeMapStore();
-const { destinationLocation, carpoolLocations, routes } =
-  storeToRefs(homeMapStore);
-
-// must be the first or second person, bc they were assigned first to the group
-const driverId = computed(() => {
-  if (props.group.length === 1) {
-    localGroup.value = [];
-    return props.group[0];
-  }
-  const distances = props.group.slice(0, 2).map((person) => {
-    return routes.value.find((route) => route.carpoolId === person)?.distance;
-  });
-
-  console.log(distances);
-
-  const maxDistanceIndex = distances.indexOf(Math.max(...distances));
-
-  console.log(maxDistanceIndex);
-  console.log(props.group[maxDistanceIndex]);
-  localGroup.value = localGroup.value.filter(
-    (person) => person !== props.group[maxDistanceIndex],
-  );
-
-  return props.group[maxDistanceIndex];
-});
+const { carpoolLocations } = storeToRefs(homeMapStore);
 
 const getPersonFromId = (id: string) => {
   const person = carpoolLocations.value.find((location) => location.id === id);
   console.log(person);
   return person;
 };
+
+const showWarning = computed(() => {
+  return props.group.passengers.length + 1 > props.group.capacity;
+});
 </script>
 
 <template>
-  <div>
-    <div class="text-lg">Car {{ number + 1 }}</div>
-    <div>
+  <li class="group">
+    <div class="flex flex-wrap justify-between content-end">
+      <div class="text-lg font-semibold">Car {{ number + 1 }}</div>
+      <div
+        class="text-sm flex content-end h-3.5"
+        :class="{
+          warning: showWarning,
+        }"
+      >
+        {{ group.passengers.length + 1 }} x
+        <Icon
+          :fill="showWarning ? 'var(--red)' : 'var(--purple)'"
+          size="16px"
+          name="person-standing"
+        />
+        / {{ group.capacity }} x
+        <Icon size="16px" name="seats" fill="none" />
+      </div>
+    </div>
+    <div class="group__subtitle">
       <Icon fill="var(--purple)" size="16px" name="car" />
-      Driver:
+      <span class="font-medium">Driver: </span>
+    </div>
+    <div>
       {{
-        getPersonFromId(driverId)?.name ??
-        getPersonFromId(driverId)?.label ??
-        getPersonFromId(driverId)?.address.place
+        getPersonFromId(group.driver)?.name ??
+        getPersonFromId(group.driver)?.place
       }}
     </div>
-    <div>Passengers:</div>
-    <ul>
-      <li v-for="person in localGroup" :key="person">
-        {{
-          getPersonFromId(person)?.name ??
-          getPersonFromId(person)?.label ??
-          getPersonFromId(person)?.address.place
-        }}
+    <div class="group__subtitle">
+      <Icon fill="var(--purple)" size="16px" name="person-standing" />
+      <span class="font-medium">Passengers:</span>
+    </div>
+    <div v-if="!group.passengers.length" class="subtle italic">
+      No passengers
+    </div>
+    <ul v-else>
+      <li v-for="person in group.passengers" :key="person">
+        {{ getPersonFromId(person)?.name ?? getPersonFromId(person)?.place }}
       </li>
     </ul>
-  </div>
+  </li>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.group {
+  width: 15rem;
+  padding: 0.5rem 1rem;
+  height: 100%;
+  &:not(:last-child) {
+    border-right: 1px solid var(--lavender);
+  }
+  .warning {
+    color: var(--red);
+  }
+  .group__subtitle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.5rem 0 0.25rem 0;
+  }
+}
+</style>

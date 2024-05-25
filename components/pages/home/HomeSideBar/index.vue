@@ -3,13 +3,11 @@ import mapboxgl from "mapbox-gl";
 import { useHomeSuggestionsStore } from "~/stores/home/suggestions";
 
 const homeMapStore = useHomeMapStore();
-const { destinationLocation, carpoolLocations, routes } =
-  storeToRefs(homeMapStore);
+const { destinationLocation, carpoolLocations } = storeToRefs(homeMapStore);
 
 const homeCsvStore = useHomeCsvStore();
 
 const homeSuggestionsStore = useHomeSuggestionsStore();
-const { suggestions } = storeToRefs(homeSuggestionsStore);
 
 const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
 mapboxgl.accessToken = MAPBOX_API_KEY;
@@ -23,30 +21,10 @@ const handleReset = () => {
   homeCsvStore.reset();
   homeSuggestionsStore.reset();
 };
-
-const generateCarpoolPlan = async () => {
-  // generate carpool plan
-  const carpoolPlan = await $fetch("/api/suggestions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: {
-      destination: destinationLocation.value,
-      routes: routes.value,
-    },
-  });
-
-  suggestions.value = carpoolPlan;
-};
 </script>
 
 <template>
-  <Popup
-    height="calc(100vh - 2rem - 5.5rem)"
-    width="400px"
-    class="flex flex-col content-center justify-start overflow-y-auto"
-  >
+  <Popup class="sidebar">
     <div class="flex justify-between items-center mb-4">
       <p class="text-lg">Your trip</p>
       <div class="flex gap-3">
@@ -103,18 +81,23 @@ const generateCarpoolPlan = async () => {
       >or</span
     >
     <UploadCsvButton v-show="destinationLocation && !carpoolLocations.length" />
-    <Button
+    <SuggestionsButton
       v-show="destinationLocation && carpoolLocations?.length > 1"
-      variant="primary"
-      class="mx-auto mt-auto mb-3"
-      @click="generateCarpoolPlan"
-    >
-      Generate Carpoolplan
-    </Button>
+    />
   </Popup>
 </template>
 
 <style lang="scss" scoped>
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow-y: auto;
+  padding: 1.5rem;
+  height: calc(100vh - 2rem - 5.5rem);
+  width: 400px;
+}
+
 .destination__title,
 .carpool__title {
   display: flex;
