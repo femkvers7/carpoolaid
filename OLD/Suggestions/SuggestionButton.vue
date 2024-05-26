@@ -1,9 +1,12 @@
 <script setup lang="ts">
 const homeMapStore = useHomeMapStore();
-const { suggestions, routes, destinationLocation } = storeToRefs(homeMapStore);
+const { routes, destinationLocation } = storeToRefs(homeMapStore);
+
+const homeSuggestionsStore = useHomeSuggestionsStore();
+const { suggestions } = storeToRefs(homeSuggestionsStore);
 
 const indexStore = useIndexStore();
-const { showSuggestions, isLoading } = storeToRefs(indexStore);
+const { isLoading } = storeToRefs(indexStore);
 
 const handleSuggestionSubmit = async () => {
   isLoading.value = true;
@@ -20,7 +23,6 @@ const handleSuggestionSubmit = async () => {
   });
 
   suggestions.value = result2;
-  showSuggestions.value = true;
   isLoading.value = false;
 };
 

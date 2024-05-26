@@ -31,7 +31,7 @@ const handleClickNext = () => {
 
 <template>
   <div class="backdrop">
-    <Popup class="column-popup" width="40rem" height="fit-content">
+    <Popup class="column-popup">
       <Icon
         fill="var(--purple)"
         size="16px"
@@ -39,7 +39,7 @@ const handleClickNext = () => {
         class="absolute top-4 right-4 cursor-pointer"
         @click="$emit('close')"
       />
-      <h3>Please indicate which information is included in the file</h3>
+      <h3>What information is included in the file?</h3>
       <p class="subtle mt-1 mb-3">
         Columns with the following names are auto-imported: <br />
         Country, City, Postcode*, Street, Address_number
@@ -165,6 +165,8 @@ const handleClickNext = () => {
   transform: translate(-50%, -50%);
   z-index: 10;
   padding: 1.5rem;
+  width: 40rem;
+  height: fit-content;
 
   text-align: center;
 }

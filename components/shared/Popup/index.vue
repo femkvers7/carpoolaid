@@ -1,10 +1,4 @@
-<script setup lang="ts">
-const props = defineProps<{
-  width?: string;
-  height?: string;
-  ratio?: string;
-}>();
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="popup">

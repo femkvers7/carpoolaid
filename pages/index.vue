@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { useIndexStore } from "~/stores";
 const indexStore = useIndexStore();
-const { showSidebar, showSuggestions } = storeToRefs(indexStore);
+const { showSidebar } = storeToRefs(indexStore);
+
+const homeSuggestionsStore = useHomeSuggestionsStore();
+const { suggestions, hideSuggestions } = storeToRefs(homeSuggestionsStore);
 
 const homeCsvStore = useHomeCsvStore();
 const { showColumnPopup, showPreviewPopup } = storeToRefs(homeCsvStore);
@@ -19,10 +22,11 @@ const closePopups = () => {
     </Transition>
     <Transition name="slide">
       <SuggestionsContainer
-        v-if="showSuggestions"
+        v-if="suggestions.length"
         class="suggestions"
         :style="{
           left: showSidebar ? 'calc(400px + 2rem)' : '1rem',
+          bottom: hideSuggestions ? '-11rem' : '1rem',
         }"
       />
     </Transition>
@@ -49,10 +53,10 @@ const closePopups = () => {
 
 .suggestions {
   position: absolute;
-  bottom: 1rem;
   left: 1rem;
   z-index: 2;
   transition: left 0.3s ease-out;
+  transition: bottom 0.3s ease-out;
 }
 
 /** Toggle sidebar transition */

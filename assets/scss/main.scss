@@ -3,6 +3,7 @@ body {
   margin: 0;
   padding: 1rem;
   background-color: var(--background);
+  overflow-y: hidden;
 }
 
 #__nuxt {

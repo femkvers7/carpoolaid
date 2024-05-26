@@ -2,11 +2,25 @@
 import { useHomeSuggestionsStore } from "~/stores/home/suggestions";
 
 const homeSuggestionsStore = useHomeSuggestionsStore();
-const { suggestions } = storeToRefs(homeSuggestionsStore);
+const { suggestions, hideSuggestions } = storeToRefs(homeSuggestionsStore);
+
+const toggleHideSuggestions = () => {
+  hideSuggestions.value = !hideSuggestions.value;
+};
 </script>
 
 <template>
   <Popup class="suggestions__container">
+    <Icon
+      fill="var(--purple)"
+      size="16px"
+      name="arrow-down"
+      class="suggestions__hide"
+      :style="{
+        transform: hideSuggestions ? 'rotate(180deg)' : 'rotate(0deg)',
+      }"
+      @click="toggleHideSuggestions"
+    />
     <ul class="suggestions__list">
       <SuggestionsGroup
         v-for="(group, index) in suggestions"
@@ -20,12 +34,19 @@ const { suggestions } = storeToRefs(homeSuggestionsStore);
 
 <style scoped lang="scss">
 .suggestions__container {
+  display: flex;
+  flex-direction: row-reverse;
   margin-right: 2rem;
   padding: 1rem 0;
-  width: fit-content;
+  width: calc(fit-content(100%) + 2rem);
   max-width: calc(100vw - 2rem - 1rem - 2rem - 400px);
-  height: fit-content;
-  max-height: 15rem;
+  height: 14rem;
+
+  .suggestions__hide {
+    cursor: pointer;
+    margin: 0 1rem;
+    flex-shrink: 0;
+  }
   .suggestions__list {
     display: flex;
     align-items: flex-start;

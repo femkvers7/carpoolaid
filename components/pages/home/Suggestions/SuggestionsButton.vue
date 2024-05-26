@@ -5,9 +5,6 @@ const { destinationLocation, routes } = storeToRefs(homeMapStore);
 const homeSuggestionsStore = useHomeSuggestionsStore();
 const { suggestions } = storeToRefs(homeSuggestionsStore);
 
-const indexStore = useIndexStore();
-const { showSuggestions } = storeToRefs(indexStore);
-
 const generateCarpoolPlan = async () => {
   // generate carpool plan
   const carpoolPlan = await $fetch("/api/suggestions", {
@@ -23,7 +20,6 @@ const generateCarpoolPlan = async () => {
 
   console.log(carpoolPlan);
   suggestions.value = carpoolPlan;
-  showSuggestions.value = true;
 };
 </script>
 

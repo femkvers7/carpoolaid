@@ -90,7 +90,7 @@ const handleClickBack = () => {
 
 <template>
   <div class="backdrop">
-    <Popup class="preview-popup" width="40rem" height="fit-content">
+    <Popup class="preview-popup">
       <Icon
         fill="var(--purple)"
         size="16px"
@@ -176,6 +176,8 @@ const handleClickBack = () => {
   transform: translate(-50%, -50%);
   z-index: 10;
   padding: 1.5rem;
+  width: 40rem;
+  height: fit-content;
 
   text-align: center;
 
