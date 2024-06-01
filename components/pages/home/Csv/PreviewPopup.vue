@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Location, MapboxLocation } from "~/types/Location";
+import type { Location } from "~/types/Location";
 
 const csvStore = useHomeCsvStore();
 const { showColumnPopup, showPreviewPopup, previewColumns, rows } =

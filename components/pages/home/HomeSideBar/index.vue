@@ -2,6 +2,9 @@
 import mapboxgl from "mapbox-gl";
 import { useHomeSuggestionsStore } from "~/stores/home/suggestions";
 
+const indexStore = useIndexStore();
+const { showSavePopup } = storeToRefs(indexStore);
+
 const homeMapStore = useHomeMapStore();
 const { destinationLocation, carpoolLocations } = storeToRefs(homeMapStore);
 
@@ -13,14 +16,23 @@ const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
 mapboxgl.accessToken = MAPBOX_API_KEY;
 
 // check if logged in
-const jwt = useCookie("sb-access-token");
-const isLoggedIn = computed(() => !!jwt.value);
+const session = useSupabaseSession();
+console.log(session.value, "session");
+const isLoggedIn = computed(() => !!session.value);
 
 const handleReset = () => {
   homeMapStore.reset();
   homeCsvStore.reset();
   homeSuggestionsStore.reset();
 };
+
+const buttonEnabled = computed(() => {
+  return (
+    isLoggedIn.value &&
+    !!destinationLocation.value &&
+    !!carpoolLocations.value.length
+  );
+});
 </script>
 
 <template>
@@ -34,14 +46,26 @@ const handleReset = () => {
           </Button>
         </Tooltip>
         <Tooltip
-          :content="isLoggedIn ? 'Save' : 'Log in to save trip'"
           position="left"
+          :content="
+            !isLoggedIn
+              ? 'Log in to save trip'
+              : !destinationLocation || !carpoolLocations.length
+                ? 'No data to save'
+                : 'Save'
+          "
         >
-          <Button variant="neutral" :disabled="!isLoggedIn">
+          <Button
+            variant="neutral"
+            :disabled="!buttonEnabled"
+            @click="showSavePopup = true"
+          >
             <Icon
-              :fill="isLoggedIn ? 'var(--purple)' : 'var(--lavender)'"
               size="16px"
               name="floppy"
+              :style="{
+                fill: buttonEnabled ? 'var(--purple)' : 'var(--lavender)',
+              }"
             />
           </Button>
         </Tooltip>

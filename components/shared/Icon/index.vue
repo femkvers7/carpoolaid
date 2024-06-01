@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  fill: string; // Ensure this is a valid CSS color value
+  fill?: string; // Ensure this is a valid CSS color value
   size: string;
   width?: string;
   height?: string;

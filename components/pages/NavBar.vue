@@ -5,8 +5,8 @@ const indexStore = useIndexStore();
 const { showSidebar } = storeToRefs(indexStore);
 
 // check if logged in
-const jwt = useCookie("sb-access-token");
-const isLoggedIn = computed(() => !!jwt.value);
+const session = useSupabaseSession();
+const isLoggedIn = computed(() => !!session.value);
 
 const toggleSidebar = () => {
   showSidebar.value = !showSidebar.value;
@@ -134,7 +134,7 @@ nav {
   right: 1rem;
   top: 6rem;
   z-index: 200;
-  padding: 1rem 1rem;
+  padding: 0.5rem 1.75rem;
 
   ul {
     display: flex;

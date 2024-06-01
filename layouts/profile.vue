@@ -21,7 +21,7 @@ const title = computed(() => {
     <NavBar :show-hamburger="false" :show-profile="false" />
     <main>
       <ProfileSideBar />
-      <Popup class="ml-4">
+      <Popup class="profile-main">
         <div class="p-4">
           <h2 class="mb-4">{{ title }}</h2>
           <slot />
@@ -36,5 +36,10 @@ main {
   height: calc(100vh - 7.5rem);
   margin: 1rem 0;
   display: flex;
+  .profile-main {
+    width: 100%;
+    margin-left: 1rem;
+    padding: 1.25rem;
+  }
 }
 </style>

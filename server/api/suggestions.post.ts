@@ -10,6 +10,7 @@ import { Location } from "~/types/Location";
 import type { Overlaps } from "~/types/Overlaps";
 import { Route } from "~/types/Route";
 import { SuggestionGroup } from "~/types/Suggestion";
+import { v4 as uuidv4 } from "uuid";
 
 const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
 
@@ -121,6 +122,7 @@ const calculateGroups = (overlaps: Overlaps, routes: Route[]) => {
         );
         if (person?.carSeats) {
           groups.push({
+            id: uuidv4(),
             driver: person.carpoolId,
             passengers: [],
             capacity: person.carSeats,
@@ -155,6 +157,7 @@ const calculateGroups = (overlaps: Overlaps, routes: Route[]) => {
             existingGroup.passengers.push(person!.carpoolId);
             // start a new group with the switcher
             groups.push({
+              id: uuidv4(),
               driver: switchWith.carpoolId,
               passengers: [],
               capacity: switchWith.carSeats,
@@ -201,6 +204,7 @@ const calculateGroups = (overlaps: Overlaps, routes: Route[]) => {
         const passenger = driver === person1 ? person2 : person1;
 
         groups.push({
+          id: uuidv4(),
           driver: driver!.carpoolId,
           passengers: [passenger!.carpoolId],
           capacity: driver!.carSeats,
@@ -217,6 +221,7 @@ const calculateGroups = (overlaps: Overlaps, routes: Route[]) => {
         const passenger = driver === person1 ? person2 : person1;
 
         groups.push({
+          id: uuidv4(),
           driver: driver!.carpoolId,
           passengers: [passenger!.carpoolId],
           capacity: driver!.carSeats,
@@ -232,6 +237,7 @@ const calculateGroups = (overlaps: Overlaps, routes: Route[]) => {
 
   for (const carpool in carpoolIds) {
     groups.push({
+      id: uuidv4(),
       driver: carpoolIds[carpool],
       passengers: [],
       capacity: routes.find((route) => route.carpoolId === carpoolIds[carpool])!

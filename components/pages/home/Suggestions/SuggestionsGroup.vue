@@ -9,7 +9,6 @@ const { carpoolLocations } = storeToRefs(homeMapStore);
 
 const getPersonFromId = (id: string) => {
   const person = carpoolLocations.value.find((location) => location.id === id);
-  console.log(person);
   return person;
 };
 

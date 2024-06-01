@@ -35,6 +35,7 @@ export default defineEventHandler(async (event) => {
       id: uuidv4(),
       coordinates: locationFeatures.geometry.coordinates as number[],
       place: locationFeatures.properties.context.place?.name,
+      fullAddress: locationFeatures.properties.full_address,
       carSeats: 4,
     };
   });

@@ -11,16 +11,6 @@ definePageMeta({
 
 const errorMessage = ref<string | null>(null);
 
-// check if logged in
-const jwt = useCookie("sb-access-token");
-const isLoggedIn = computed(() => !!jwt.value);
-
-// onBeforeMount(() => {
-//   if (isLoggedIn.value) {
-//     navigateTo("/");
-//   }
-// });
-
 const validationSchema = yup.object({
   email: yup.string().required().label("Email"),
   password: yup.string().required().label("Password"),

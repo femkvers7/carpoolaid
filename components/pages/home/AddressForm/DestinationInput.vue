@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Location, MapboxLocation } from "~/types/Location";
+import type { Location } from "~/types/Location";
 
 const indexStore = useIndexStore();
 const homeMapStore = useHomeMapStore();
@@ -9,7 +9,7 @@ const { destinationLocation, carpoolLocations } = storeToRefs(homeMapStore);
 
 const editDestination = ref<boolean>(false);
 
-const onRetrieveDestinationLocation = async (location: MapboxLocation) => {
+const onRetrieveDestinationLocation = async (location: Location) => {
   isLoading.value = true;
 
   destinationLocation.value = location;

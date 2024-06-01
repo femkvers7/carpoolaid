@@ -2,7 +2,8 @@
 // export type Suggestion = string[];
 
 export type SuggestionGroup = {
-  driver: string; // id of the driver can act as unique identifier
+  id: string;
+  driver: string;
   passengers: string[];
   capacity: number;
 };

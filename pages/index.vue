@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useIndexStore } from "~/stores";
 const indexStore = useIndexStore();
-const { showSidebar } = storeToRefs(indexStore);
+const { showSidebar, showSavePopup } = storeToRefs(indexStore);
 
 const homeSuggestionsStore = useHomeSuggestionsStore();
 const { suggestions, hideSuggestions } = storeToRefs(homeSuggestionsStore);
@@ -33,6 +33,7 @@ const closePopups = () => {
     <Map class="map" />
     <ColumnPopup v-if="showColumnPopup" @close="closePopups" />
     <PreviewPopup v-if="showPreviewPopup" @close="closePopups" />
+    <SavePopup v-if="showSavePopup" @close="showSavePopup = false" />
   </VFragment>
 </template>
 

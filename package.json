@@ -7,7 +7,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "supabase-types": "npx supabase gen types typescript --project-id `tbfrpsqioeijqyoczxlh` --schema public > types/supabase.ts"
   },
   "dependencies": {
     "@mapbox/search-js-web": "^1.0.0-beta.21",
@@ -37,6 +38,7 @@
     "prettier": "^3.2.5",
     "sass": "^1.72.0",
     "sass-loader": "^14.1.1",
+    "supabase": "^1.169.8",
     "typescript": "^5.4.4"
   }
 }

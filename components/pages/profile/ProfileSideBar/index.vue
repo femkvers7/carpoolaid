@@ -10,10 +10,7 @@ const profileStore = useProfileStore();
 const { activeTab } = storeToRefs(profileStore);
 </script>
 <template>
-  <Popup
-    width="18rem"
-    class="flex flex-col content-center justify-between overflow-y-auto"
-  >
+  <Popup class="wrapper">
     <ul>
       <div>
         <li>
@@ -66,33 +63,42 @@ const { activeTab } = storeToRefs(profileStore);
 </template>
 
 <style scoped lang="scss">
-ul {
-  padding: 0 1rem;
+.wrapper {
+  width: 18rem;
   display: flex;
   flex-direction: column;
-  height: 100%;
   justify-content: space-between;
-  li > * {
+  align-items: center;
+  overflow-y: auto;
+  ul {
+    padding: 1.25rem 1.75rem;
     display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    margin: 0.75rem 0;
-    position: relative;
-    &.active::after {
-      content: "";
-      width: 5px;
-      height: 100%;
-      position: absolute;
-      right: 0;
-      background-color: var(--purple);
-      border-radius: 12px;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    justify-content: space-between;
+    li > * {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin: 0.75rem 0;
+      position: relative;
+      &.active::after {
+        content: "";
+        width: 5px;
+        height: 100%;
+        position: absolute;
+        right: 0;
+        background-color: var(--purple);
+        border-radius: 12px;
+      }
     }
-  }
-  li:not(:last-child) {
-    border-bottom: 1px solid var(--purple);
-  }
-  .logout {
-    padding: 1rem 0;
+    li:not(:last-child) {
+      border-bottom: 1px solid var(--purple);
+    }
+    .logout {
+      padding: 1rem 0;
+    }
   }
 }
 </style>

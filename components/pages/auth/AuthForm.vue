@@ -25,7 +25,7 @@ const authUrl = computed(() => {
         Go back to homepage
       </Button>
     </div>
-    <Popup width="400px" height="fit-content" class="my-2">
+    <Popup class="wrapper">
       <div class="my-2">
         <h1 class="text-center capitalize">{{ variant }}</h1>
         <Form
@@ -76,6 +76,13 @@ const authUrl = computed(() => {
   .button-home {
     text-decoration: none;
   }
+}
+
+.wrapper {
+  width: 400px;
+  height: fit-content;
+  margin: 0.5rem 0;
+  padding: 1rem;
 }
 
 .forgot-password,

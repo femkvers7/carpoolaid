@@ -53,7 +53,7 @@ const toggleHideSuggestions = () => {
     justify-content: start;
     flex-wrap: wrap;
     overflow-y: auto;
-    height: fit-content;
+    height: 12rem;
     row-gap: 1rem;
   }
 }

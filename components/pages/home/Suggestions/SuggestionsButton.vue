@@ -18,7 +18,6 @@ const generateCarpoolPlan = async () => {
     },
   });
 
-  console.log(carpoolPlan);
   suggestions.value = carpoolPlan;
 };
 </script>
