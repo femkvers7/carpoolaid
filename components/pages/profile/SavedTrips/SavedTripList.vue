@@ -1,25 +1,25 @@
 <script setup lang="ts">
-const savedTrips: Object[] = [
-  {
-    name: "Trip 1",
-    id: 1,
-    destination: "Destination address",
-  },
-  {
-    name: "Trip 2",
-    id: 2,
-    destination: "Destination address",
-  },
-  {
-    name: "Trip 3",
-    id: 3,
-    destination: "Destination address",
-  },
-];
+import type { Tables } from "~/types/supabase";
+
+const props = defineProps<{
+  savedTrips: Tables<"trips">[] | null;
+}>();
+
+const emit = defineEmits(["refresh"]);
+
+const handleRefresh = () => {
+  emit("refresh", true);
+};
 </script>
 
 <template>
-  <ul>
-    <SavedTripListItem v-for="trip in savedTrips" :key="trip.id" :trip="trip" />
+  <ul v-if="savedTrips && savedTrips.length">
+    <SavedTripListItem
+      v-for="trip in savedTrips"
+      :key="trip.id"
+      :trip="trip"
+      @refresh="handleRefresh"
+    />
   </ul>
+  <p v-else>No saved trips</p>
 </template>

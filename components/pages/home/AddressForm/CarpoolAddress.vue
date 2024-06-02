@@ -14,6 +14,8 @@ const homeMapStore = useHomeMapStore();
 
 const homeFormStore = useHomeFormStore();
 
+console.log(props.location, "location from carpool address");
+
 const deleteLocation = (e: Event) => {
   e.preventDefault();
 
@@ -31,10 +33,10 @@ const toggleEditLocation = () => {
   <div class="flex justify-between items-center mt-1">
     <p class="flex items-center gap-2">
       {{ location.name ?? location.place }}
-      <span v-if="location.carSeats">
+      <span v-if="location.carSeats" class="seats">
         - {{ location.carSeats }} x
         <Icon
-          fill="none"
+          fill="var(--green)"
           size="16px"
           width="25"
           height="16"
@@ -52,3 +54,9 @@ const toggleEditLocation = () => {
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+.seats {
+  color: var(--green);
+}
+</style>

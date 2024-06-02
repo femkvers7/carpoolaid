@@ -20,7 +20,7 @@ const { activeTab } = storeToRefs(profileStore);
               active: activeTab === 'profile',
             }"
           >
-            <Icon fill="var(--purple)" size="16px" name="person-fill" />
+            <Icon fill="var(--green)" size="16px" name="person-fill" />
             Profile
           </NuxtLink>
         </li>
@@ -32,7 +32,7 @@ const { activeTab } = storeToRefs(profileStore);
             }"
           >
             <Icon
-              fill="var(--purple)"
+              fill="var(--green)"
               size="16px"
               width="12px"
               name="bookmark"
@@ -47,7 +47,7 @@ const { activeTab } = storeToRefs(profileStore);
               active: activeTab === 'settings',
             }"
           >
-            <Icon fill="var(--purple)" size="16px" name="settings" />
+            <Icon fill="var(--green)" size="16px" name="settings" />
             Settings
           </NuxtLink>
         </li>
@@ -89,7 +89,7 @@ const { activeTab } = storeToRefs(profileStore);
         height: 100%;
         position: absolute;
         right: 0;
-        background-color: var(--purple);
+        background-color: var(--green);
         border-radius: 12px;
       }
     }

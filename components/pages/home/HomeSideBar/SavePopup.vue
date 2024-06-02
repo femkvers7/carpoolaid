@@ -47,13 +47,6 @@ const handleSave = async (values: { [key: string]: string }) => {
   if (overlapData && overlapData.length > 0) {
     // delete existing trip
     await deleteTrip(overlapData[0].trip_id);
-
-    if (error) {
-      throw createError({
-        ...error,
-        message: "Error saving trip, please try again",
-      });
-    }
   }
 
   const { data: tripData, error: tripError } = await createTrip({
@@ -134,7 +127,7 @@ const handleSave = async (values: { [key: string]: string }) => {
     }
   }
 
-  // don't forget the addresses
+  emit("close");
 };
 </script>
 <template>
@@ -196,12 +189,6 @@ const handleSave = async (values: { [key: string]: string }) => {
 
   .save-popup__input {
     margin: 1rem auto;
-    text-align: start;
-  }
-
-  .error {
-    color: var(--red);
-    margin: 0.5rem 0;
     text-align: start;
   }
 

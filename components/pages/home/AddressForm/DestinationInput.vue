@@ -37,7 +37,7 @@ const toggleEditDestination = (e: Event) => {
       v-if="!!destinationLocation && editDestination == false"
       class="flex justify-between content-end my-2"
     >
-      <p>{{ destinationLocation.place }}</p>
+      <p>{{ destinationLocation.name ?? destinationLocation.place }}</p>
       <button class="flex items-center" @click="toggleEditDestination">
         <Icon fill="var(--purple)" size="16px" name="pencil-square" />
       </button>

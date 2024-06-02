@@ -6,9 +6,24 @@ export const getTripsByUserId = async (userId: string) => {
   const { data, error } = await supabase
     .from("trips")
     .select("*, locations(*)")
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .eq("locations.type", "destination");
 
   console.log("getTrips", data, error);
+
+  return { data, error };
+};
+
+export const getTripById = async (tripId: string) => {
+  const supabase = useSupabaseClient<Database>();
+
+  const { data, error } = await supabase
+    .from("trips")
+    .select("*, locations(*), groups(*)")
+    .eq("id", tripId)
+    .single();
+
+  console.log("getTripExtended", data, error);
 
   return { data, error };
 };

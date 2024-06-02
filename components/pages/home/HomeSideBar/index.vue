@@ -2,6 +2,9 @@
 import mapboxgl from "mapbox-gl";
 import { useHomeSuggestionsStore } from "~/stores/home/suggestions";
 
+const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
+mapboxgl.accessToken = MAPBOX_API_KEY;
+
 const indexStore = useIndexStore();
 const { showSavePopup } = storeToRefs(indexStore);
 
@@ -12,12 +15,8 @@ const homeCsvStore = useHomeCsvStore();
 
 const homeSuggestionsStore = useHomeSuggestionsStore();
 
-const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
-mapboxgl.accessToken = MAPBOX_API_KEY;
-
 // check if logged in
 const session = useSupabaseSession();
-console.log(session.value, "session");
 const isLoggedIn = computed(() => !!session.value);
 
 const handleReset = () => {
@@ -74,14 +73,14 @@ const buttonEnabled = computed(() => {
     <div class="manual-input">
       <div class="destination">
         <div class="destination__title">
-          <Icon fill="var(--purple)" size="16px" width="12px" name="pin" />
+          <Icon fill="var(--green)" size="16px" width="12px" name="pin" />
           <p>Choose a destination</p>
         </div>
         <DestinationInput />
       </div>
       <div class="carpool">
         <div class="carpool__title">
-          <Icon fill="var(--purple)" size="16px" name="car" />
+          <Icon fill="var(--green)" size="16px" name="car" />
           <p>Choose your carpool locations</p>
         </div>
         <div v-if="destinationLocation">
@@ -127,7 +126,7 @@ const buttonEnabled = computed(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 0rem;
+  margin-bottom: 0.5rem;
 }
 
 .carpool-list {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Location, MapboxLocation } from "~/types/Location";
+import type { Location } from "~/types/Location";
 const homeFormStore = useHomeFormStore();
 const { formValues, isEditing } = storeToRefs(homeFormStore);
 
@@ -7,7 +7,7 @@ const homeMapStore = useHomeMapStore();
 const { carpoolLocations, destinationLocation, routes } =
   storeToRefs(homeMapStore);
 
-const onRetrieveCarpoolLocation = (location: MapboxLocation) => {
+const onRetrieveCarpoolLocation = (location: Location) => {
   formValues.value = {
     ...formValues.value,
     ...location,
@@ -19,6 +19,8 @@ const onSubmit = async () => {
     window.alert("Please enter an address");
     return;
   }
+
+  console.log(formValues.value);
 
   carpoolLocations.value.push(formValues.value as Location);
 
@@ -53,7 +55,7 @@ const onSubmit = async () => {
         name="name"
         class="w-full"
         placeholder="Optional"
-        :value="formValues.name ?? ''"
+        :value="formValues.name"
         required
         @change="formValues.name = $event.target.value"
       />

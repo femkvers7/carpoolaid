@@ -34,11 +34,11 @@ const showWarning = computed(() => {
           name="person-standing"
         />
         / {{ group.capacity }} x
-        <Icon size="16px" name="seats" fill="none" />
+        <Icon size="16px" name="seats" fill="var(--purple)" />
       </div>
     </div>
     <div class="group__subtitle">
-      <Icon fill="var(--purple)" size="16px" name="car" />
+      <Icon fill="var(--green)" size="16px" name="car" />
       <span class="font-medium">Driver: </span>
     </div>
     <div>
@@ -48,7 +48,7 @@ const showWarning = computed(() => {
       }}
     </div>
     <div class="group__subtitle">
-      <Icon fill="var(--purple)" size="16px" name="person-standing" />
+      <Icon fill="var(--green)" size="16px" name="person-standing" />
       <span class="font-medium">Passengers:</span>
     </div>
     <div v-if="!group.passengers.length" class="subtle italic">

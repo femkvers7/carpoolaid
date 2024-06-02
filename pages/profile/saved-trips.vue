@@ -14,12 +14,19 @@ const { activeTab } = storeToRefs(profileStore);
 activeTab.value = "saved-trips";
 
 const user = useSupabaseUser();
-const userId = user.value!.id;
+const { data, error } = await getTripsByUserId(user.value!.id);
 
-const trips = await getTripsByUserId(userId!);
-console.log(trips, "trips");
+const savedTrips = ref(data);
+
+console.log(savedTrips, "savedTrips");
+
+const handleRefresh = () => {
+  getTripsByUserId(user.value!.id).then((res) => {
+    savedTrips.value = res.data;
+  });
+};
 </script>
 
 <template>
-  <SavedTripList />
+  <SavedTripList :saved-trips="savedTrips" @refresh="handleRefresh" />
 </template>

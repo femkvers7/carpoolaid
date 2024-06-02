@@ -5,7 +5,7 @@ export const useHomeFormStore = defineStore("homeForm", () => {
   const { carpoolLocations, routes } = storeToRefs(homeMapStore);
 
   const emptyForm = {
-    name: "",
+    name: undefined,
     carSeats: 4,
   };
 
