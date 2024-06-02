@@ -41,12 +41,11 @@ const showWarning = computed(() => {
       <Icon fill="var(--green)" size="16px" name="car" />
       <span class="font-medium">Driver: </span>
     </div>
-    <div>
-      {{
-        getPersonFromId(group.driver)?.name ??
-        getPersonFromId(group.driver)?.place
-      }}
-    </div>
+    <LocationLabel
+      :name="getPersonFromId(group.driver)?.name"
+      :place="getPersonFromId(group.driver)?.place"
+      :car-seats="group.capacity"
+    />
     <div class="group__subtitle">
       <Icon fill="var(--green)" size="16px" name="person-standing" />
       <span class="font-medium">Passengers:</span>
@@ -56,7 +55,11 @@ const showWarning = computed(() => {
     </div>
     <ul v-else>
       <li v-for="person in group.passengers" :key="person">
-        {{ getPersonFromId(person)?.name ?? getPersonFromId(person)?.place }}
+        <LocationLabel
+          :name="getPersonFromId(person)?.name"
+          :place="getPersonFromId(person)?.place"
+          :car-seats="group.capacity"
+        />
       </li>
     </ul>
   </li>
