@@ -62,7 +62,6 @@ const [unassigned, soloDrivers] = partition(
   margin-right: 2rem;
   padding: 1rem 0;
   width: calc(fit-content(100%) + 2rem);
-  max-width: calc(100vw - 2rem - 1rem - 2rem - 400px);
   height: 14rem;
 
   .controls {

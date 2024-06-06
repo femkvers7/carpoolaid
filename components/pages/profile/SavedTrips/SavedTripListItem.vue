@@ -53,7 +53,7 @@ const handleOpenTrip = async () => {
         name: loc?.name ?? "",
         carSeats: loc?.car_seats ?? undefined,
         groupId: loc.group_id ?? undefined,
-        fullAddress: loc.full_address ?? "",
+        fullAddress: loc?.full_address ?? "",
       };
     });
 
@@ -66,7 +66,7 @@ const handleOpenTrip = async () => {
         name: loc?.name ?? "",
         carSeats: loc?.car_seats ?? undefined,
         groupId: loc.group_id ?? undefined,
-        fullAddress: loc.full_address ?? "",
+        fullAddress: loc?.full_address ?? "",
       };
     })[0];
 
@@ -100,7 +100,7 @@ const handleOpenTrip = async () => {
     <li>
       <div class="flex gap-1">
         <p class="trip__name">{{ trip.name }}</p>
-        <p class="trip__destination">- {{ trip.locations[0].full_address }}</p>
+        <p class="trip__destination">- {{ trip.locations[0]?.full_address }}</p>
       </div>
       <div class="flex flex-row gap-4">
         <p class="trip__timestamp">{{ formatTimestamp(trip.created_at) }}</p>

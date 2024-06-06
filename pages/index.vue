@@ -27,6 +27,9 @@ const closePopups = () => {
         :style="{
           left: showSidebar ? 'calc(400px + 2rem)' : '1rem',
           bottom: hideSuggestions ? '-11rem' : '1rem',
+          'max-width': showSidebar
+            ? 'calc(100vw - 2rem - 1rem - 2rem - 400px)'
+            : 'calc(100vw - 2rem - 2rem)',
         }"
       />
     </Transition>

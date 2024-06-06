@@ -1,7 +1,11 @@
 import { defineStore } from "pinia";
 import type { Location } from "~/types/Location";
 import type { Route } from "~/types/Route";
-import mapboxgl, { GeoJSONSource, type LngLatBoundsLike } from "mapbox-gl";
+import mapboxgl, {
+  GeoJSONSource,
+  type LngLatBoundsLike,
+  type LngLatLike,
+} from "mapbox-gl";
 import { v4 as uuidv4 } from "uuid";
 
 export const useHomeMapStore = defineStore("homeMap", () => {
@@ -14,6 +18,24 @@ export const useHomeMapStore = defineStore("homeMap", () => {
   const carpoolLocations = ref<Location[]>([]);
   const routes = ref<Route[]>([]);
   const mapInstance = ref<mapboxgl.Map | null>(null);
+  const popups = ref<mapboxgl.Popup | null>(null);
+
+  const setPopup = (coord: LngLatLike, html: string) => {
+    console.log("popping");
+    popups.value = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false,
+    })
+      .setLngLat(coord)
+      .setHTML(html);
+  };
+
+  const removePopup = () => {
+    const popup = document.getElementsByClassName("mapboxgl-popup");
+    if (popup.length) {
+      popup[0].remove();
+    }
+  };
 
   const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
 
@@ -30,6 +52,7 @@ export const useHomeMapStore = defineStore("homeMap", () => {
               coordinates: destinationLocation.value.coordinates,
             },
             properties: {
+              id: destinationLocation.value.id,
               title: destinationLocation.value.place,
               description: "Destination",
               type: "destination",
@@ -46,8 +69,9 @@ export const useHomeMapStore = defineStore("homeMap", () => {
             coordinates: location.coordinates,
           },
           properties: {
-            title: "Carpool",
-            description: location.name ?? location.place,
+            id: location.id,
+            title: location.place,
+            description: location.name ?? "",
             type: "carpool",
           },
         }))
@@ -170,10 +194,13 @@ export const useHomeMapStore = defineStore("homeMap", () => {
     mapInstance,
     markersGeoJSON,
     routesGeoJSON,
+    popups,
     getRoute,
     updateRoutes,
     updateMapData,
     testFunction,
     reset,
+    setPopup,
+    removePopup,
   };
 });

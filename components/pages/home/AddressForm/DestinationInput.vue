@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { LngLatLike } from "mapbox-gl";
 import type { Location } from "~/types/Location";
 
 const indexStore = useIndexStore();
@@ -8,6 +9,7 @@ const { isLoading } = storeToRefs(indexStore);
 const { destinationLocation, carpoolLocations } = storeToRefs(homeMapStore);
 
 const editDestination = ref<boolean>(false);
+const isHovering = ref(false);
 
 const onRetrieveDestinationLocation = async (location: Location) => {
   isLoading.value = true;
@@ -29,6 +31,22 @@ const toggleEditDestination = (e: Event) => {
   e.preventDefault();
   editDestination.value = !editDestination.value;
 };
+
+const handleDestinationHover = () => {
+  isHovering.value = true;
+  homeMapStore.setPopup(
+    destinationLocation.value!.coordinates as LngLatLike,
+    `
+      <h2>${destinationLocation.value?.place}</h2>
+      <p>Destination</p>
+    `,
+  );
+};
+
+const handleDestinationLeave = () => {
+  isHovering.value = false;
+  homeMapStore.removePopup();
+};
 </script>
 
 <template>
@@ -36,6 +54,11 @@ const toggleEditDestination = (e: Event) => {
     <div
       v-if="!!destinationLocation && editDestination == false"
       class="flex justify-between content-end my-2"
+      :class="{
+        'font-bold': isHovering,
+      }"
+      @mouseover="handleDestinationHover"
+      @mouseleave="handleDestinationLeave"
     >
       <p>{{ destinationLocation.name ?? destinationLocation.place }}</p>
       <button class="flex items-center" @click="toggleEditDestination">

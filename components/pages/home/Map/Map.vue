@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import mapboxgl, { Map } from "mapbox-gl";
+import mapPin from "assets/images/pin.png";
 
 useHead({
   link: [
@@ -15,8 +16,10 @@ const homeMapStore = useHomeMapStore();
 
 mapboxgl.accessToken = MAPBOX_API_KEY;
 
-const { mapInstance, markersGeoJSON, routesGeoJSON } =
+const { mapInstance, markersGeoJSON, routesGeoJSON, popups } =
   storeToRefs(homeMapStore);
+
+const mapboxMap = ref<mapboxgl.Map | null>(null);
 
 onMounted(() => {
   const map = new mapboxgl.Map({
@@ -26,6 +29,8 @@ onMounted(() => {
     zoom: 8,
     language: "nl",
   });
+
+  mapboxMap.value = map;
 
   map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
 
@@ -46,7 +51,7 @@ onMounted(() => {
       },
       paint: {
         "line-color": "#008170",
-        "line-width": 5,
+        "line-width": 3,
         "line-opacity": 0.6,
       },
     });
@@ -55,25 +60,36 @@ onMounted(() => {
       type: "geojson",
       data: markersGeoJSON.value,
     });
+
+    map.loadImage(mapPin, (error, image) => {
+      if (error || !image) throw error;
+      map.addImage("pin", image);
+
+      map.addLayer({
+        id: "destination",
+        type: "symbol",
+        source: "markers",
+        layout: {
+          "icon-image": "pin",
+          "icon-size": 1.25,
+          "icon-anchor": "bottom",
+        },
+        filter: ["==", "type", "destination"],
+      });
+    });
+
     map.addLayer({
-      id: "markers",
+      id: "carpools",
       type: "circle",
       source: "markers",
       paint: {
-        "circle-color": [
-          "match",
-          ["get", "type"],
-          "destination",
-          "#01584D",
-          "carpool",
-          "#6C6D74",
-          "#ffffff",
-        ],
+        "circle-color": "#87A57F",
         "circle-radius": 6,
         "circle-stroke-width": 2,
         "circle-stroke-color": "#ffffff",
-        "circle-opacity": 0.75,
+        "circle-opacity": 0.9,
       },
+      filter: ["==", "type", "carpool"],
     });
   });
 
@@ -83,7 +99,7 @@ onMounted(() => {
     closeOnClick: false,
   });
 
-  map.on("mouseenter", "markers", (e: mapboxgl.EventData) => {
+  map.on("mouseenter", ["carpools", "destination"], (e: mapboxgl.EventData) => {
     map.getCanvas().style.cursor = "pointer";
 
     const coordinates = e.features[0].geometry.coordinates.slice();
@@ -101,10 +117,24 @@ onMounted(() => {
       .addTo(map);
   });
 
-  map.on("mouseleave", "markers", () => {
+  map.on("mouseleave", ["carpools", "destination"], () => {
     map.getCanvas().style.cursor = "";
     popup.remove();
   });
+
+  map.on("closeAllPopups", () => {
+    popup.remove();
+  });
+});
+
+watch(popups, () => {
+  // remove any open popups
+  mapboxMap.value?._popups.forEach((popup: mapboxgl.Popup) => {
+    popup.remove();
+  });
+  if (popups.value) {
+    popups.value?.addTo(mapboxMap.value!);
+  }
 });
 </script>
 

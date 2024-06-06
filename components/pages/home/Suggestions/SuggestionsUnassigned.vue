@@ -25,6 +25,7 @@ const getPersonFromId = (id: string) => {
           :name="getPersonFromId(group.driver)?.name"
           :place="getPersonFromId(group.driver)?.place"
           :car-seats="group.capacity"
+          :coordinates="getPersonFromId(group.driver)?.coordinates"
         />
       </li>
     </ul>
@@ -33,7 +34,7 @@ const getPersonFromId = (id: string) => {
 
 <style lang="scss" scoped>
 .unassigned {
-  width: 15rem;
+  width: 17rem;
   padding: 0.5rem 1rem;
   height: 100%;
   &:not(:last-child) {

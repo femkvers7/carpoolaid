@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { LngLatLike } from "mapbox-gl";
 import type { Location } from "~/types/Location";
 
 const props = defineProps({
@@ -10,11 +11,11 @@ const props = defineProps({
 
 const emit = defineEmits(["editLocation"]);
 
+const isHovering = ref(false);
+
 const homeMapStore = useHomeMapStore();
 
 const homeFormStore = useHomeFormStore();
-
-console.log(props.location, "location from carpool address");
 
 const deleteLocation = (e: Event) => {
   e.preventDefault();
@@ -27,24 +28,50 @@ const deleteLocation = (e: Event) => {
 const toggleEditLocation = () => {
   homeFormStore.onEdit(props.location);
 };
+
+const handleAddressHover = () => {
+  isHovering.value = true;
+  homeMapStore.setPopup(
+    props.location.coordinates as LngLatLike,
+    `
+      <h2>${props.location.place}</h2>
+      <p>${props.location.name ?? ""}</p>
+    `,
+  );
+};
+
+const handleAddressLeave = () => {
+  isHovering.value = false;
+  homeMapStore.removePopup();
+};
 </script>
 
 <template>
   <div class="flex justify-between items-center mt-1">
-    <p class="flex items-center gap-2">
-      {{ location.name ?? location.place }}
-      <span v-if="location.carSeats" class="seats">
-        - {{ location.carSeats }} x
+    <p
+      class="flex items-center"
+      :class="{
+        'font-bold': isHovering,
+      }"
+      @mouseover="handleAddressHover"
+      @mouseleave="handleAddressLeave"
+    >
+      <span>{{ location.name }}</span>
+      <span v-if="location.name && location.place" class="mx-3">-</span>
+      <span class="italic">{{ location.place }}</span>
+    </p>
+    <div class="flex gap-3 items-center">
+      <div v-if="location.carSeats" class="seats">
+        {{ location.carSeats }}
         <Icon
-          fill="var(--green)"
+          fill="none"
           size="16px"
           width="25"
           height="16"
           name="seats"
           class="block"
-      /></span>
-    </p>
-    <div class="flex gap-3 items-center">
+        />
+      </div>
       <Button variant="neutral" @click="toggleEditLocation">
         <Icon fill="var(--purple)" size="16px" name="pencil-square" />
       </Button>
@@ -57,6 +84,10 @@ const toggleEditLocation = () => {
 
 <style scoped lang="scss">
 .seats {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
   color: var(--green);
+  margin-right: 0.25rem;
 }
 </style>

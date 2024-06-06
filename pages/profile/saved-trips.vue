@@ -28,5 +28,8 @@ const handleRefresh = () => {
 </script>
 
 <template>
-  <SavedTripList :saved-trips="savedTrips" @refresh="handleRefresh" />
+  <SavedTripList
+    :saved-trips="savedTrips?.reverse()"
+    @refresh="handleRefresh"
+  />
 </template>

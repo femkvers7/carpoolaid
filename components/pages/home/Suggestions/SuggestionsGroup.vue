@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { LngLatLike } from "mapbox-gl";
+
 const props = defineProps<{
   group: SuggestionGroup;
   number: number;
@@ -9,6 +11,7 @@ const { carpoolLocations } = storeToRefs(homeMapStore);
 
 const getPersonFromId = (id: string) => {
   const person = carpoolLocations.value.find((location) => location.id === id);
+  console.log(person, "person");
   return person;
 };
 
@@ -27,14 +30,14 @@ const showWarning = computed(() => {
           warning: showWarning,
         }"
       >
-        {{ group.passengers.length + 1 }} x
+        {{ group.passengers.length + 1 }}
         <Icon
           :fill="showWarning ? 'var(--red)' : 'var(--purple)'"
           size="16px"
           name="person-standing"
         />
-        / {{ group.capacity }} x
-        <Icon size="16px" name="seats" fill="var(--purple)" />
+        / {{ group.capacity }}
+        <Icon size="16px" name="seats" fill="none" />
       </div>
     </div>
     <div class="group__subtitle">
@@ -45,6 +48,7 @@ const showWarning = computed(() => {
       :name="getPersonFromId(group.driver)?.name"
       :place="getPersonFromId(group.driver)?.place"
       :car-seats="group.capacity"
+      :coordinates="getPersonFromId(group.driver)?.coordinates"
     />
     <div class="group__subtitle">
       <Icon fill="var(--green)" size="16px" name="person-standing" />
@@ -59,6 +63,7 @@ const showWarning = computed(() => {
           :name="getPersonFromId(person)?.name"
           :place="getPersonFromId(person)?.place"
           :car-seats="group.capacity"
+          :coordinates="getPersonFromId(person)?.coordinates"
         />
       </li>
     </ul>
@@ -67,7 +72,7 @@ const showWarning = computed(() => {
 
 <style scoped lang="scss">
 .group {
-  width: 15rem;
+  width: 17rem;
   padding: 0.5rem 1rem;
   height: 100%;
   &:not(:last-child) {
