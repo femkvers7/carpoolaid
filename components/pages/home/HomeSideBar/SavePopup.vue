@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import * as yup from "yup";
 import {
   createLocation,
   createLocations,
@@ -18,6 +17,7 @@ const homeSuggestionsStore = useHomeSuggestionsStore();
 const { suggestions } = storeToRefs(homeSuggestionsStore);
 
 const warnings = ref<string[]>([]);
+const tripName = ref<string | null>(null);
 
 if (!suggestions.value.length) {
   warnings.value.unshift("Will be saved without carpool plan.");
@@ -35,7 +35,7 @@ if (overlapData && overlapData.length > 0) {
   );
 }
 
-const handleSave = async (values: { [key: string]: string }) => {
+const handleSave = async () => {
   if (!destinationLocation.value || !carpoolLocations.value.length) {
     throw createError({
       message: "Must select a destination and at least one carpool location",
@@ -51,7 +51,7 @@ const handleSave = async (values: { [key: string]: string }) => {
 
   const { data: tripData, error: tripError } = await createTrip({
     userId: user.value!.id,
-    name: values.tripName ?? "My trip",
+    name: tripName.value ?? "My trip",
   });
 
   if (tripError) {
@@ -68,7 +68,7 @@ const handleSave = async (values: { [key: string]: string }) => {
     id: destinationLocation.value.id,
     lat: destinationLocation.value.coordinates[1],
     long: destinationLocation.value.coordinates[0],
-    name: destinationLocation.value.place ?? null,
+    place: destinationLocation.value.place ?? null,
     type: "destination",
     full_address: destinationLocation.value.fullAddress ?? null,
     trip_id: tripId,
@@ -86,7 +86,8 @@ const handleSave = async (values: { [key: string]: string }) => {
     id: location.id,
     lat: location.coordinates[1],
     long: location.coordinates[0],
-    name: location.name ?? location.place ?? null,
+    name: location.name ?? null,
+    place: location.place ?? null,
     car_seats: location.carSeats,
     type: "carpool",
     full_address: location.fullAddress ?? null,
@@ -141,10 +142,7 @@ const handleSave = async (values: { [key: string]: string }) => {
         @click="$emit('close')"
       />
       <h3>Save your trip</h3>
-      <Form
-        :validation-schema="yup.object({ tripName: yup.string() })"
-        @on-submit="handleSave"
-      >
+      <form method="post">
         <Input
           label="Trip name"
           name="tripName"
@@ -158,8 +156,8 @@ const handleSave = async (values: { [key: string]: string }) => {
           class="warning my-4"
           v-html="warning"
         ></div>
-        <Button class="ml-auto" type="submit">Save</Button>
-      </Form>
+        <Button class="ml-auto" @click="handleSave">Save</Button>
+      </form>
     </Popup>
   </div>
 </template>

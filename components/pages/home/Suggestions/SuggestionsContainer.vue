@@ -27,19 +27,18 @@ const [unassigned, soloDrivers] = partition(
   <Popup class="suggestions__container">
     <div class="controls">
       <Icon
-        fill="var(--purple)"
         size="16px"
-        name="eraser"
-        @click="resetSuggestions"
+        name="eye"
+        :style="{
+          fill: hideSuggestions ? 'var(--lavender)' : 'var(--purple)',
+        }"
+        @click="toggleHideSuggestions"
       />
       <Icon
         fill="var(--purple)"
         size="16px"
-        name="arrow-down"
-        :style="{
-          transform: hideSuggestions ? 'rotate(180deg)' : 'rotate(0deg)',
-        }"
-        @click="toggleHideSuggestions"
+        name="eraser"
+        @click="resetSuggestions"
       />
     </div>
     <ul class="suggestions__list">
@@ -67,6 +66,7 @@ const [unassigned, soloDrivers] = partition(
   .controls {
     margin: 0 1rem;
     display: flex;
+    flex-direction: column;
     gap: 0.5rem;
     > * {
       cursor: pointer;

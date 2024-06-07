@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import * as yup from "yup";
-
 const props = defineProps<{
   variant: "login" | "register";
-  validationSchema: yup.ObjectSchema<any>;
 }>();
 
 const emit = defineEmits(["formSubmit"]);
@@ -28,26 +25,8 @@ const authUrl = computed(() => {
     <Popup class="wrapper">
       <div class="my-2">
         <h1 class="text-center capitalize">{{ variant }}</h1>
-        <Form
-          class="mt-6 mb-5 flex flex-col gap-3"
-          :validation-schema="validationSchema"
-          @on-submit="emit('formSubmit', $event)"
-        >
-          <slot />
-          <div class="flex justify-between items-end">
-            <Button
-              v-if="variant === 'login'"
-              variant="tertiary"
-              class="text-sm forgot-password"
-              disabled
-            >
-              Forgot password?
-            </Button>
-            <Button type="submit" class="ml-auto capitalize">
-              {{ variant }}
-            </Button>
-          </div>
-        </Form>
+
+        <slot />
       </div>
     </Popup>
     <div class="redirects">

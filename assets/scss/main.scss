@@ -18,6 +18,22 @@ main {
   cursor: wait;
 }
 
+.mapboxgl-popup-content,
+.mapboxgl-popup-content-wrapper {
+  background-color: var(--white) !important;
+  color: var(--purple) !important;
+  border-radius: 1rem !important;
+  padding: 1rem !important;
+
+  h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  p {
+    font-size: 0.9rem;
+  }
+}
+
 /* Scrollbar styling */
 /* width */
 ::-webkit-scrollbar {

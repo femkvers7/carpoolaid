@@ -12,22 +12,7 @@ export const useHomeFormStore = defineStore("homeForm", () => {
   type EmptyForm = typeof emptyForm;
 
   const formValues = ref<Location | EmptyForm>(emptyForm);
-  const isEditing = ref<boolean>(false);
-
-  const onEdit = (location: Location) => {
-    isEditing.value = true;
-    formValues.value = location;
-    const mapInput = document.getElementById(
-      "location-input",
-    ) as HTMLInputElement;
-
-    // have to redo, geocode from coordinates (or use place name?)
-    //const initialAddress = `${location?.address.street ?? ""} ${location?.address.address_number ?? ""} ${location?.address.place ?? ""} ${location?.address.postcode ?? ""} ${location?.address.country ?? ""}`;
-
-    //mapInput.value = initialAddress;
-
-    deleteLocation(location.id);
-  };
+  const isEditing = ref<string | null>(null);
 
   const resetForm = () => {
     formValues.value = emptyForm;
@@ -50,7 +35,6 @@ export const useHomeFormStore = defineStore("homeForm", () => {
   return {
     formValues,
     isEditing,
-    onEdit,
     resetForm,
     deleteLocation,
   };

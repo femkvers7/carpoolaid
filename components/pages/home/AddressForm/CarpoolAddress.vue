@@ -9,13 +9,14 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["editLocation"]);
+defineEmits(["editLocation"]);
 
 const isHovering = ref(false);
 
 const homeMapStore = useHomeMapStore();
 
 const homeFormStore = useHomeFormStore();
+const { formValues, isEditing } = storeToRefs(homeFormStore);
 
 const deleteLocation = (e: Event) => {
   e.preventDefault();
@@ -26,7 +27,13 @@ const deleteLocation = (e: Event) => {
 };
 
 const toggleEditLocation = () => {
-  homeFormStore.onEdit(props.location);
+  isEditing.value = props.location.id;
+  formValues.value = props.location;
+
+  const mapInput = document.getElementById(
+    "location-input",
+  ) as HTMLInputElement;
+  mapInput.value = props.location.fullAddress ?? props.location.place ?? "";
 };
 
 const handleAddressHover = () => {
@@ -52,6 +59,9 @@ const handleAddressLeave = () => {
       class="flex items-center"
       :class="{
         'font-bold': isHovering,
+      }"
+      :style="{
+        color: isEditing === location.id ? 'var(--green)' : 'var(--purple)',
       }"
       @mouseover="handleAddressHover"
       @mouseleave="handleAddressLeave"

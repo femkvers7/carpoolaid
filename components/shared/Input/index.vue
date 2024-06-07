@@ -1,32 +1,26 @@
 <script setup lang="ts">
-import { useField } from "vee-validate";
-const props = defineProps<{
-  label?: string;
+defineProps<{
   name: string;
+  label?: string;
+  id?: string;
   type?: string;
   placeholder?: string;
-  width?: string;
   value?: string | number;
   disabled?: boolean;
+  errorMessage?: string;
   min?: number;
-  id?: string;
+  width?: string;
 }>();
 
-// validation
-const { value, errorMessage, handleBlur, handleChange } = useField(
-  () => props.name,
-  undefined,
-  {
-    validateOnValueUpdate: false,
-    initialValue: props.value,
-  },
-);
+const model = defineModel();
 
-const validationListeners = {
-  blur: (e: Event) => handleBlur(e, true),
-  change: handleChange,
-  input: (e: Event) => handleChange(e, !!errorMessage.value),
-};
+defineEmits(["input", "blur", "change"]);
+
+// const validationListeners = {
+//   blur: (e: Event) => handleBlur(e, true),
+//   change: handleChange,
+//   input: (e: Event) => handleChange(e, !!errorMessage.value),
+// };
 </script>
 
 <template>
@@ -39,15 +33,17 @@ const validationListeners = {
     </label>
     <input
       :id="id"
-      :type="type ?? 'text'"
+      v-model="model"
       :name="name"
+      :type="type ?? 'text'"
       :placeholder="placeholder"
-      :value="value"
       :disabled="disabled"
-      class="input w-full"
       :min="min"
       autocomplete="off"
-      v-on="validationListeners"
+      class="input w-full"
+      @blur="$emit('blur', $event)"
+      @input="$emit('input', $event)"
+      @change="$emit('change', $event)"
     />
     <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
   </div>

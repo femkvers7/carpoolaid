@@ -64,19 +64,19 @@ const onRetrieve = (event: any) => {
     @input.prevent
   >
   </mapbox-search-box>
-  <!--  :value="initialAddress" -> crashes app bc search field doesn't exist on launch, somehow 
-    problemen voor later
-  -->
-  <!--
-    Styling is causing trouble on render:
-    :theme="{
-      variables: {
-        colorBackground: 'var(--beige)',
-        boxShadow: 'none',
-        borderRadius: '0.5rem',
-        colorText: 'var(--purple)',
-        fontFamily: 'Montserrat, sans-serif',
-      },
-    }"
-  -->
 </template>
+
+<style>
+mapbox-search-box {
+  :focus-visible {
+    outline: none;
+  }
+  div {
+    background-color: var(--beige) !important;
+    box-shadow: none !important;
+    border-radius: 0.5rem !important;
+    color: var(--purple) !important;
+    font-family: Montserrat, sans-serif !important;
+  }
+}
+</style>

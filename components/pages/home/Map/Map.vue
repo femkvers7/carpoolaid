@@ -97,6 +97,7 @@ onMounted(() => {
   const popup = new mapboxgl.Popup({
     closeButton: false,
     closeOnClick: false,
+    className: "mapbox-popup",
   });
 
   map.on("mouseenter", ["carpools", "destination"], (e: mapboxgl.EventData) => {
@@ -110,8 +111,10 @@ onMounted(() => {
       .setLngLat(coordinates)
       .setHTML(
         `
+        <div>
           <h2>${title}</h2>
           <p>${description}</p>
+        </div>
         `,
       )
       .addTo(map);

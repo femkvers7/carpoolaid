@@ -20,8 +20,6 @@ const onSubmit = async () => {
     return;
   }
 
-  console.log(formValues.value);
-
   carpoolLocations.value.push(formValues.value as Location);
 
   // computeRoute
@@ -34,6 +32,21 @@ const onSubmit = async () => {
   homeMapStore.updateMapData(["markers", "routes"]);
 
   // set form back to reset
+  homeFormStore.resetForm();
+};
+
+const cancelEdit = () => {
+  isEditing.value = null;
+  homeFormStore.resetForm();
+};
+
+const handleUpdate = () => {
+  carpoolLocations.value = carpoolLocations.value.map((location) =>
+    location.id === isEditing.value
+      ? { ...location, ...formValues.value }
+      : location,
+  );
+  isEditing.value = null;
   homeFormStore.resetForm();
 };
 </script>
@@ -55,7 +68,7 @@ const onSubmit = async () => {
         name="name"
         class="w-full"
         placeholder="Optional"
-        :value="formValues.name"
+        :model-value="formValues.name"
         required
         @change="formValues.name = $event.target.value"
       />
@@ -71,13 +84,36 @@ const onSubmit = async () => {
         name="car-seats"
         width="15%"
         :min="0"
-        :value="formValues.carSeats"
+        :model-value="formValues.carSeats"
         @change="formValues.carSeats = parseInt($event.target.value)"
       />
     </div>
-    <Button variant="accent" class="ml-auto" @click.prevent="onSubmit">
+    <Button
+      v-if="!isEditing"
+      variant="accent"
+      class="ml-auto"
+      @click.prevent="onSubmit"
+    >
       <Icon fill="var(--beige)" size="16px" name="plus"></Icon>
     </Button>
+    <div v-else class="flex gap-2 ml-auto">
+      <Button variant="accent">
+        <Icon
+          fill="var(--beige)"
+          size="16px"
+          name="cross"
+          @click="cancelEdit"
+        ></Icon>
+      </Button>
+      <Button variant="accent">
+        <Icon
+          fill="var(--beige)"
+          size="16px"
+          name="arrow-right"
+          @click="handleUpdate"
+        ></Icon>
+      </Button>
+    </div>
   </form>
 </template>
 
