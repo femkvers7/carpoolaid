@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { Tables } from "~/types/supabase";
 
-const props = defineProps<{
-  savedTrips: Tables<"trips">[] | null;
+defineProps<{
+  savedTrips: (Tables<"trips"> & { locations: Tables<"locations">[] })[] | null;
 }>();
 
 const emit = defineEmits(["refresh"]);

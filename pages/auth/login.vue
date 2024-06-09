@@ -10,6 +10,9 @@ definePageMeta({
   middleware: "exclude-if-logged-in",
 });
 
+const indexStore = useIndexStore();
+const { isLoading } = storeToRefs(indexStore);
+
 const errorMessage = ref<string | null>(null);
 
 const validationSchema = yup.object({
@@ -25,12 +28,14 @@ const [email] = defineField("email");
 const [password] = defineField("password");
 
 const onSubmit = handleSubmit(async (values) => {
+  isLoading.value = true;
   const { data, error } = await loginUser(values.email, values.password);
   if (error) {
     errorMessage.value = "Something went wrong. Please try again.";
   } else {
     navigateTo("/");
   }
+  isLoading.value = false;
 });
 </script>
 

@@ -10,6 +10,9 @@ const emit = defineEmits(["refresh"]);
 
 const router = useRouter();
 
+const indexStore = useIndexStore();
+const { isLoading } = storeToRefs(indexStore);
+
 const suggestionsStore = useHomeSuggestionsStore();
 const { suggestions } = storeToRefs(suggestionsStore);
 
@@ -28,8 +31,10 @@ const handleDeleteClose = (refreshTrips: boolean) => {
   }
 };
 
-/**  */
+/** Open a saved trip from profile  */
 const handleOpenTrip = async () => {
+  isLoading.value = true;
+
   // reset all data
   homeMapStore.reset();
   csvStore.reset();
@@ -91,7 +96,9 @@ const handleOpenTrip = async () => {
       passengers: passengers,
     };
   });
+
   router.push("/");
+  isLoading.value = false;
 };
 </script>
 

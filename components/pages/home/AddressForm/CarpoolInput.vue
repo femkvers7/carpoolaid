@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import type { Location } from "~/types/Location";
+const indexStore = useIndexStore();
+const { isLoading } = storeToRefs(indexStore);
+
 const homeFormStore = useHomeFormStore();
 const { formValues, isEditing } = storeToRefs(homeFormStore);
 
@@ -8,10 +11,12 @@ const { carpoolLocations, destinationLocation, routes } =
   storeToRefs(homeMapStore);
 
 const onRetrieveCarpoolLocation = (location: Location) => {
+  isLoading.value = true;
   formValues.value = {
     ...formValues.value,
     ...location,
   };
+  isLoading.value = false;
 };
 
 const onSubmit = async () => {
@@ -19,7 +24,7 @@ const onSubmit = async () => {
     window.alert("Please enter an address");
     return;
   }
-
+  isLoading.value = true;
   carpoolLocations.value.push(formValues.value as Location);
 
   // computeRoute
@@ -33,21 +38,44 @@ const onSubmit = async () => {
 
   // set form back to reset
   homeFormStore.resetForm();
+  isLoading.value = false;
 };
 
 const cancelEdit = () => {
+  isLoading.value = true;
   isEditing.value = null;
   homeFormStore.resetForm();
+  isLoading.value = false;
 };
 
-const handleUpdate = () => {
+const handleUpdate = async () => {
+  isLoading.value = true;
   carpoolLocations.value = carpoolLocations.value.map((location) =>
     location.id === isEditing.value
-      ? { ...location, ...formValues.value }
+      ? { ...location, ...formValues.value, id: isEditing.value }
       : location,
   );
+
+  const newLocation = carpoolLocations.value.find(
+    (location) => location.id === isEditing.value,
+  );
+  console.log(isEditing.value, newLocation, formValues.value, routes.value);
+
+  // update route
+  routes.value = routes.value.filter(
+    (route) => route.carpoolId !== isEditing.value,
+  );
+
+  const newRoute = await homeMapStore.getRoute(
+    { ...newLocation, ...formValues.value, id: isEditing.value } as Location,
+    destinationLocation.value!,
+  );
+  routes.value.push(newRoute);
+
   isEditing.value = null;
   homeFormStore.resetForm();
+  homeMapStore.updateMapData(["markers", "routes"]);
+  isLoading.value = false;
 };
 </script>
 

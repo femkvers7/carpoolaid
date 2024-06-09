@@ -1,4 +1,7 @@
 <script setup lang="ts">
+const indexStore = useIndexStore();
+const { isLoading } = storeToRefs(indexStore);
+
 const profileStore = useProfileStore();
 const { activeTab } = storeToRefs(profileStore);
 
@@ -18,6 +21,7 @@ const title = computed(() => {
 
 <template>
   <VFragment class="auth-page">
+    <Loader v-show="isLoading" />
     <NavBar :show-hamburger="false" :show-profile="false" />
     <main>
       <ProfileSideBar />

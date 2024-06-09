@@ -1,5 +1,12 @@
+<script setup lang="ts">
+import { useIndexStore } from "~/stores";
+const indexStore = useIndexStore();
+
+const { isLoading } = storeToRefs(indexStore);
+</script>
 <template>
   <VFragment class="auth-page">
+    <Loader v-show="isLoading" />
     <NavBar :show-hamburger="false" :show-profile="false" />
     <main>
       <slot />

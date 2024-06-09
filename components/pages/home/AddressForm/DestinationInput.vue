@@ -28,8 +28,9 @@ const onRetrieveDestinationLocation = async (location: Location) => {
 };
 
 const toggleEditDestination = (e: Event) => {
-  e.preventDefault();
+  isLoading.value = true;
   editDestination.value = !editDestination.value;
+  isLoading.value = false;
 };
 
 const handleDestinationHover = () => {
@@ -61,7 +62,7 @@ const handleDestinationLeave = () => {
       @mouseleave="handleDestinationLeave"
     >
       <p>{{ destinationLocation.name ?? destinationLocation.place }}</p>
-      <button class="flex items-center" @click="toggleEditDestination">
+      <button class="flex items-center" @click.prevent="toggleEditDestination">
         <Icon fill="var(--purple)" size="16px" name="pencil-square" />
       </button>
     </div>

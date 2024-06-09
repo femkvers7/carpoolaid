@@ -7,6 +7,7 @@ const { isLoading } = storeToRefs(indexStore);
 
 <template>
   <VFragment>
+    <Loader v-show="isLoading" />
     <NavBar />
     <main :class="{ loading: isLoading }">
       <slot />

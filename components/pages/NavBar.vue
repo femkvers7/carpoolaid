@@ -2,7 +2,11 @@
 import { logoutUser } from "~/modules/api/auth";
 
 const indexStore = useIndexStore();
-const { showSidebar } = storeToRefs(indexStore);
+const { showSidebar, isLoading } = storeToRefs(indexStore);
+
+const homeMapStore = useHomeMapStore();
+const homeCsvStore = useHomeCsvStore();
+const homeSuggestionsStore = useHomeSuggestionsStore();
 
 // check if logged in
 const session = useSupabaseSession();
@@ -26,8 +30,15 @@ const props = defineProps({
 const showProfileMenu = ref(false);
 
 const handleLogout = () => {
+  isLoading.value = true;
+  // reset everything
+  homeMapStore.reset();
+  homeCsvStore.reset();
+  homeSuggestionsStore.reset();
+
   logoutUser();
   showProfileMenu.value = false;
+  isLoading.value = false;
 };
 </script>
 

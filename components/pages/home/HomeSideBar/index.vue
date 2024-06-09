@@ -6,7 +6,7 @@ const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
 mapboxgl.accessToken = MAPBOX_API_KEY;
 
 const indexStore = useIndexStore();
-const { showSavePopup } = storeToRefs(indexStore);
+const { showSavePopup, isLoading } = storeToRefs(indexStore);
 
 const homeMapStore = useHomeMapStore();
 const { destinationLocation, carpoolLocations } = storeToRefs(homeMapStore);
@@ -18,11 +18,20 @@ const homeSuggestionsStore = useHomeSuggestionsStore();
 // check if logged in
 const session = useSupabaseSession();
 const isLoggedIn = computed(() => !!session.value);
+isLoading.value = false;
 
 const handleReset = () => {
+  isLoading.value = true;
   homeMapStore.reset();
   homeCsvStore.reset();
   homeSuggestionsStore.reset();
+  isLoading.value = false;
+};
+
+const handleSave = () => {
+  isLoading.value = true;
+  showSavePopup.value = true;
+  isLoading.value = false;
 };
 
 const buttonEnabled = computed(() => {
@@ -57,7 +66,7 @@ const buttonEnabled = computed(() => {
           <Button
             variant="neutral"
             :disabled="!buttonEnabled"
-            @click="showSavePopup = true"
+            @click="handleSave"
           >
             <Icon
               size="16px"

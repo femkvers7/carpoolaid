@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import type { Location } from "~/types/Location";
 
+const indexStore = useIndexStore();
+const { isLoading } = storeToRefs(indexStore);
+
 const csvStore = useHomeCsvStore();
 const { showColumnPopup, showPreviewPopup, previewColumns, rows } =
   storeToRefs(csvStore);
@@ -26,6 +29,9 @@ const rowsLeft = computed(() => {
 });
 
 const handleClickNext = async () => {
+  isLoading.value = true;
+  showPreviewPopup.value = false;
+
   const carpoolBody = rows.value.map((row) => {
     return {
       place: row["City"],
@@ -79,7 +85,7 @@ const handleClickNext = async () => {
     homeMapStore.updateMapData(["markers", "routes"]);
   } else homeMapStore.updateMapData(["markers"]);
 
-  showPreviewPopup.value = false;
+  isLoading.value = false;
 };
 
 const handleClickBack = () => {

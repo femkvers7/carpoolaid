@@ -7,10 +7,14 @@ const props = defineProps<{
 
 const emit = defineEmits(["close"]);
 
+const indexStore = useIndexStore();
+const { isLoading } = storeToRefs(indexStore);
+
 const handleDelete = async () => {
-  console.log("delete trip");
-  await deleteTrip(props.tripId);
   emit("close", true);
+  isLoading.value = true;
+  await deleteTrip(props.tripId);
+  isLoading.value = false;
 };
 </script>
 

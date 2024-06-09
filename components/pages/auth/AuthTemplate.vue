@@ -3,8 +3,6 @@ const props = defineProps<{
   variant: "login" | "register";
 }>();
 
-const emit = defineEmits(["formSubmit"]);
-
 const authUrl = computed(() => {
   return props.variant === "login" ? "/auth/register" : "/auth/login";
 });

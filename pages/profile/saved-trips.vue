@@ -18,18 +18,15 @@ const { data, error } = await getTripsByUserId(user.value!.id);
 
 const savedTrips = ref(data);
 
-console.log(savedTrips, "savedTrips");
-
 const handleRefresh = () => {
   getTripsByUserId(user.value!.id).then((res) => {
-    savedTrips.value = res.data;
+    const trips = res.data;
+    savedTrips.value = trips?.reverse() ?? [];
+    console.log(savedTrips.value);
   });
 };
 </script>
 
 <template>
-  <SavedTripList
-    :saved-trips="savedTrips?.reverse()"
-    @refresh="handleRefresh"
-  />
+  <SavedTripList :saved-trips="savedTrips" @refresh="handleRefresh" />
 </template>

@@ -9,6 +9,9 @@ definePageMeta({
   layout: "auth",
 });
 
+const indexStore = useIndexStore();
+const { isLoading } = storeToRefs(indexStore);
+
 const errorMessage = ref<string | null>(null);
 
 const validationSchema = yup.object({
@@ -29,9 +32,10 @@ const [password] = defineField("password");
 const [confirmPassword] = defineField("confirmPassword");
 
 const onSubmit = handleSubmit(async (values) => {
-  console.log("registering user", values);
+  isLoading.value = true;
   registerUser(values.email, values.password);
   navigateTo("/auth/confirm-email");
+  isLoading.value = false;
 });
 </script>
 
