@@ -1,8 +1,20 @@
+<script setup lang="ts">
+import type { NuxtError } from "#app";
+
+const props = defineProps({
+  error: Object as () => NuxtError,
+});
+
+const indexStore = useIndexStore();
+const { isLoading } = storeToRefs(indexStore);
+isLoading.value = false;
+</script>
+
 <template>
   <NuxtLayout name="auth">
     <div>
-      <h1>404</h1>
-      <p>Page not found</p>
+      <h1>{{ error?.statusCode }}</h1>
+      <p>{{ error?.statusMessage }}</p>
     </div>
   </NuxtLayout>
 </template>

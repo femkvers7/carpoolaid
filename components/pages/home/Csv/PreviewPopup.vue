@@ -29,63 +29,70 @@ const rowsLeft = computed(() => {
 });
 
 const handleClickNext = async () => {
-  isLoading.value = true;
-  showPreviewPopup.value = false;
+  try {
+    isLoading.value = true;
+    showPreviewPopup.value = false;
 
-  const carpoolBody = rows.value.map((row) => {
-    return {
-      place: row["City"],
-      postcode: row["Postcode"],
-      street: row["Street"],
-      address_number: row["Address_number"],
-      country: row["Country"],
-      limit: 1,
-    };
-  });
+    const carpoolBody = rows.value.map((row) => {
+      return {
+        place: row["City"],
+        postcode: row["Postcode"],
+        street: row["Street"],
+        address_number: row["Address_number"],
+        country: row["Country"],
+        limit: 1,
+      };
+    });
 
-  const result = await $fetch("/api/batch-geocode", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: carpoolBody,
-  });
+    const result = await $fetch("/api/batch-geocode", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: carpoolBody,
+    });
 
-  const data = await result;
-  const extendedData = ref(data);
+    const data = await result;
+    const extendedData = ref(data);
 
-  if (previewColumns.value.name || previewColumns.value.carAvailability) {
-    extendedData.value = data.map((entry: Location, index: number) => {
-      const newEntry = entry;
-      if (
-        previewColumns.value.name &&
-        rows.value[index][previewColumns.value.name]
-      ) {
-        newEntry.name = rows.value[index][previewColumns.value.name];
-      }
+    if (previewColumns.value.name || previewColumns.value.carAvailability) {
+      extendedData.value = data.map((entry: Location, index: number) => {
+        const newEntry = entry;
+        if (
+          previewColumns.value.name &&
+          rows.value[index][previewColumns.value.name]
+        ) {
+          newEntry.name = rows.value[index][previewColumns.value.name];
+        }
 
-      if (previewColumns.value.carAvailability) {
-        const carSeats = parseInt(
-          rows.value[index][previewColumns.value.carAvailability],
-        );
-        newEntry.carSeats = Object.is(carSeats, NaN) ? 0 : carSeats;
-      }
+        if (previewColumns.value.carAvailability) {
+          const carSeats = parseInt(
+            rows.value[index][previewColumns.value.carAvailability],
+          );
+          newEntry.carSeats = Object.is(carSeats, NaN) ? 0 : carSeats;
+        }
 
-      // add shift times here as well
+        // add shift times here as well
 
-      return newEntry;
+        return newEntry;
+      });
+    }
+
+    carpoolLocations.value = extendedData.value;
+
+    // update routes
+    if (destinationLocation.value) {
+      await homeMapStore.updateRoutes();
+      homeMapStore.updateMapData(["markers", "routes"]);
+    } else homeMapStore.updateMapData(["markers"]);
+
+    isLoading.value = false;
+  } catch (error) {
+    throw showError({
+      statusCode: 500,
+      statusMessage: "An error occurred while geocoding the addresses",
     });
   }
-
-  carpoolLocations.value = extendedData.value;
-
-  // update routes
-  if (destinationLocation.value) {
-    await homeMapStore.updateRoutes();
-    homeMapStore.updateMapData(["markers", "routes"]);
-  } else homeMapStore.updateMapData(["markers"]);
-
-  isLoading.value = false;
 };
 
 const handleClickBack = () => {

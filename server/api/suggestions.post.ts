@@ -125,10 +125,10 @@ const calculateGroups = (overlaps: Overlaps, routes: Route[]) => {
     if (maxOverlap.value < 15000) break;
 
     /*** Variables ***/
-    const person1 = routes.find(
+    const route1 = routes.find(
       (route) => route.carpoolId === maxOverlap.carpoolId1,
     );
-    const person2 = routes.find(
+    const route2 = routes.find(
       (route) => route.carpoolId === maxOverlap.carpoolId2,
     );
 
@@ -145,15 +145,12 @@ const calculateGroups = (overlaps: Overlaps, routes: Route[]) => {
         delete overlaps[maxOverlap.carpoolId1];
         delete carpoolIds[carpoolIds.indexOf(maxOverlap.carpoolId1)];
       } else {
-        const person = routes.find(
-          (route) => route.carpoolId === maxOverlap.carpoolId1,
-        );
-        if (person?.carSeats) {
+        if (route1?.carSeats) {
           groups.push({
             id: uuidv4(),
-            driver: person.carpoolId,
+            driver: route1.carpoolId,
             passengers: [],
-            capacity: person.carSeats,
+            capacity: route1.carSeats,
           });
 
           delete overlaps[maxOverlap.carpoolId1];
@@ -182,7 +179,7 @@ const calculateGroups = (overlaps: Overlaps, routes: Route[]) => {
               (passenger) => passenger !== switchWith.carpoolId,
             );
             // add person to existing group
-            existingGroup.passengers.push(person!.carpoolId);
+            existingGroup.passengers.push(route1!.carpoolId);
             // start a new group with the switcher
             groups.push({
               id: uuidv4(),
@@ -209,8 +206,7 @@ const calculateGroups = (overlaps: Overlaps, routes: Route[]) => {
       }
     } else {
       // determine who is the driver & start a new group
-
-      const potentialDrivers = [person1, person2].filter(
+      const potentialDrivers = [route1, route2].filter(
         (person) => person?.carSeats,
       );
 
@@ -223,7 +219,7 @@ const calculateGroups = (overlaps: Overlaps, routes: Route[]) => {
         delete overlaps[maxOverlap.carpoolId2];
       } else if (potentialDrivers.length === 1) {
         const driver = potentialDrivers[0];
-        const passenger = driver === person1 ? person2 : person1;
+        const passenger = driver === route1 ? route2 : route1;
 
         groups.push({
           id: uuidv4(),
@@ -238,9 +234,8 @@ const calculateGroups = (overlaps: Overlaps, routes: Route[]) => {
       } else {
         // determine driver
 
-        const driver =
-          person1!.distance < person2!.distance ? person2 : person1;
-        const passenger = driver === person1 ? person2 : person1;
+        const driver = route1!.distance < route2!.distance ? route2 : route1;
+        const passenger = driver === route1 ? route2 : route1;
 
         groups.push({
           id: uuidv4(),

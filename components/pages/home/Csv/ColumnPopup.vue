@@ -41,8 +41,9 @@ const handleClickNext = () => {
       />
       <h3>What information is included in the file?</h3>
       <p class="subtle mt-1 mb-3">
-        Columns with the following names are auto-imported: <br />
-        Country, City, Postcode*, Street, Address_number
+        Columns with the following names are auto-imported (case sensitive!):
+        <br />
+        Country, City, Postcode*, Street, AddressNumber
       </p>
 
       <div class="column-selectors">

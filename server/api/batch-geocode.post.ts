@@ -18,27 +18,34 @@ const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
 
-  const url = `https://api.mapbox.com/search/geocode/v6/batch?access_token=${MAPBOX_API_KEY}`;
-  const query = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
+  try {
+    const url = `https://api.mapbox.com/search/geocode/v6/batch?access_token=${MAPBOX_API_KEY}`;
+    const query = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
 
-  const result = await query.json();
+    const result = await query.json();
 
-  const formattedResult = result.batch.map((res: any) => {
-    const locationFeatures = res.features[0];
-    return {
-      id: uuidv4(),
-      coordinates: locationFeatures.geometry.coordinates as number[],
-      place: locationFeatures.properties.context.place?.name,
-      fullAddress: locationFeatures.properties.full_address,
-      carSeats: 4,
-    };
-  });
+    const formattedResult = result.batch.map((res: any) => {
+      const locationFeatures = res.features[0];
+      return {
+        id: uuidv4(),
+        coordinates: locationFeatures.geometry.coordinates as number[],
+        place: locationFeatures.properties.context.place?.name,
+        fullAddress: locationFeatures.properties.full_address,
+        carSeats: 4,
+      };
+    });
 
-  return formattedResult;
+    return formattedResult;
+  } catch (error) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: "Failed to geocode locations",
+    });
+  }
 });
