@@ -104,10 +104,8 @@ const handleSave = async () => {
   }
 
   if (suggestions.value.length > 0) {
-    console.log("saving suggestions");
     // make groups
     for (const group of suggestions.value) {
-      console.log(group, "group");
       const { data: groupData, error: groupError } = await createGroup({
         trip_id: tripId,
         id: group.id,

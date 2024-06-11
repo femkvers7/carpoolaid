@@ -4,6 +4,7 @@ import type { Location } from "~/types/Location";
 
 const indexStore = useIndexStore();
 const homeMapStore = useHomeMapStore();
+const suggestionsStore = useHomeSuggestionsStore();
 
 const { isLoading } = storeToRefs(indexStore);
 const { destinationLocation, carpoolLocations } = storeToRefs(homeMapStore);
@@ -19,6 +20,7 @@ const onRetrieveDestinationLocation = async (location: Location) => {
   if (editDestination.value || carpoolLocations.value.length > 0) {
     await homeMapStore.updateRoutes();
     homeMapStore.updateMapData(["markers", "routes"]);
+    suggestionsStore.reset();
 
     editDestination.value = false;
   } else {

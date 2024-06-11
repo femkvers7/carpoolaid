@@ -4,6 +4,9 @@ import { useHomeSuggestionsStore } from "~/stores/home/suggestions";
 const homeSuggestionsStore = useHomeSuggestionsStore();
 const { suggestions, hideSuggestions } = storeToRefs(homeSuggestionsStore);
 
+const homeMapStore = useHomeMapStore();
+const { carpoolLocations } = storeToRefs(homeMapStore);
+
 const toggleHideSuggestions = () => {
   hideSuggestions.value = !hideSuggestions.value;
 };
@@ -21,6 +24,86 @@ const [unassigned, soloDrivers] = partition(
   noPassengers,
   (group) => group.capacity === 0,
 );
+
+const getPersonFromId = (id: string) => {
+  const person = carpoolLocations.value.find((location) => location.id === id);
+  return person;
+};
+
+/** Source: https://www.youtube.com/watch?v=uxK1UVcMOOo & copilot **/
+const convertToCSV = (
+  unassigned: SuggestionGroup[],
+  groups: SuggestionGroup[],
+  soloDrivers: SuggestionGroup[],
+) => {
+  const headers = ["Name", "Address", "Type", "Car Capacity", "GroupNr"];
+  const rows = [
+    ...unassigned.map((group, index) => {
+      const driver = getPersonFromId(group.driver);
+      return [
+        driver?.name,
+        `"${driver?.fullAddress}"`,
+        "UNASSIGNED",
+        group.capacity,
+        null,
+      ];
+    }),
+    ...groups.flatMap((group, index) => {
+      const driver = getPersonFromId(group.driver);
+      const passengers = group.passengers;
+      return [
+        [
+          driver?.name,
+          `"${driver?.fullAddress}"`,
+          "driver",
+          group.capacity,
+          index + 1,
+        ],
+        ...passengers.map((passenger) => {
+          const person = getPersonFromId(passenger);
+          return [
+            person?.name,
+            `"${person?.fullAddress}"`,
+            "carpool",
+            person?.carSeats,
+            index + 1,
+          ];
+        }),
+      ];
+    }),
+    ...soloDrivers.map((group, index) => {
+      const driver = getPersonFromId(group.driver);
+      return [
+        driver?.name,
+        `"${driver?.fullAddress}"`,
+        "solo",
+        group.capacity,
+        index + 1 + groups.length,
+      ];
+    }),
+  ];
+
+  const csvRows = [headers.join(","), ...rows.map((row) => row.join(","))].join(
+    "\n",
+  );
+
+  return csvRows;
+};
+
+const exportDataToCsv = (csvRows: string) => {
+  const blob = new Blob([csvRows], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.setAttribute("download", "carpool.csv");
+  a.click();
+};
+
+const handleDownload = () => {
+  const csvRows = convertToCSV(unassigned, groups, soloDrivers);
+  exportDataToCsv(csvRows);
+};
+/** *************************************************************** **/
 </script>
 
 <template>
@@ -39,6 +122,12 @@ const [unassigned, soloDrivers] = partition(
         size="16px"
         name="eraser"
         @click="resetSuggestions"
+      />
+      <Icon
+        fill="var(--purple)"
+        size="16px"
+        name="download"
+        @click="handleDownload"
       />
     </div>
     <ul class="suggestions__list">

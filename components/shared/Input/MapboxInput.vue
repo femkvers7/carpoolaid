@@ -50,7 +50,9 @@ const onRetrieve = (event: any) => {
     placeholder=" "
     :access-token="MAPBOX_API_KEY"
     :language="['nl']"
+    :proximity="[3.866714, 50.964028]"
     :types="[
+      'poi',
       'city',
       'street',
       'address',
@@ -58,7 +60,6 @@ const onRetrieve = (event: any) => {
       'place',
       'locality',
       'neighborhood',
-      'poi',
     ]"
     @retrieve="onRetrieve"
     @input.prevent

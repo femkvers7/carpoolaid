@@ -25,7 +25,7 @@ onMounted(() => {
   const map = new mapboxgl.Map({
     container: mapInstance.value,
     style: "mapbox://styles/mapbox/streets-v12",
-    center: [4.266714, 50.964028],
+    center: [3.866714, 50.964028],
     zoom: 8,
     language: "nl",
   });
@@ -103,9 +103,13 @@ onMounted(() => {
   map.on("mouseenter", ["carpools", "destination"], (e: mapboxgl.EventData) => {
     map.getCanvas().style.cursor = "pointer";
 
+    console.log(e, "hover event");
+
     const coordinates = e.features[0].geometry.coordinates.slice();
     const title = e.features[0].properties.title;
     const description = e.features[0].properties.description;
+    const carSeats = e.features[0].properties.carSeats;
+    const type = e.features[0].properties.type;
 
     popup
       .setLngLat(coordinates)
@@ -113,7 +117,7 @@ onMounted(() => {
         `
         <div>
           <h2>${title}</h2>
-          <p>${description}</p>
+          <p>${description} ${type === "carpool" ? `${description ? " - " : ""} ${carSeats ? `${carSeats}` : "0"}` : ""}</p>
         </div>
         `,
       )

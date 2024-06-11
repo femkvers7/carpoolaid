@@ -21,7 +21,6 @@ export const useHomeMapStore = defineStore("homeMap", () => {
   const popups = ref<mapboxgl.Popup | null>(null);
 
   const setPopup = (coord: LngLatLike, html: string) => {
-    console.log("popping");
     popups.value = new mapboxgl.Popup({
       closeButton: false,
       closeOnClick: false,
@@ -73,6 +72,7 @@ export const useHomeMapStore = defineStore("homeMap", () => {
             title: location.place,
             description: location.name ?? "",
             type: "carpool",
+            carSeats: location.carSeats,
           },
         }))
       : [];

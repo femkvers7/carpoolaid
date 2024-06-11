@@ -48,10 +48,17 @@ const handleAddressHover = () => {
     props.location.coordinates as LngLatLike,
     `
       <h2>${props.location.place}</h2>
-      <p>${props.location.name ?? ""}</p>
+      <p>${props.location.name ?? ""} ${props.location.name ? " - " : ""} ${props.location.carSeats ? `${props.location.carSeats}` : ""}</p>
     `,
   );
 };
+
+/**
+ * <div>
+          <h2>${title}</h2>
+          <p>${description} ${type === "carpool" ? `${description ? " - " : ""} ${carSeats ? `${carSeats}` : "0"}` : ""}</p>
+        </div>
+ */
 
 const handleAddressLeave = () => {
   isHovering.value = false;

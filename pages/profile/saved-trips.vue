@@ -22,7 +22,6 @@ const handleRefresh = () => {
   getTripsByUserId(user.value!.id).then((res) => {
     const trips = res.data;
     savedTrips.value = trips?.reverse() ?? [];
-    console.log(savedTrips.value);
   });
 };
 </script>

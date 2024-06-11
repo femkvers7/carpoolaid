@@ -8,7 +8,6 @@ export const getLocationById = async (id: string) => {
     .select()
     .eq("id", id);
 
-  console.log("getLocationById", data, error);
   return { data, error };
 };
 
@@ -20,7 +19,6 @@ export const getLocationsById = async (ids: string[]) => {
     .select()
     .in("id", ids);
 
-  console.log("getLocationsById", data, error);
   return { data, error };
 };
 
@@ -32,7 +30,6 @@ export const createLocation = async (location: TablesInsert<"locations">) => {
     .insert(location)
     .select();
 
-  console.log("createLocation", data, error);
   return { data, error };
 };
 
@@ -46,7 +43,6 @@ export const createLocations = async (
     .insert(locations)
     .select();
 
-  console.log("createLocations", data, error);
   return { data, error };
 };
 
@@ -61,6 +57,5 @@ export const updateLocation = async (
     .update(updates)
     .eq("id", id);
 
-  console.log("updateLocation", data, error);
   return { data, error };
 };

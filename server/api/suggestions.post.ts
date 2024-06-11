@@ -28,14 +28,19 @@ const calculateFirstCommonCoord = (
 };
 
 const calculateOverlap = async (
-  geometry1: number[][],
-  geometry2: number[][],
+  route1: Route,
+  route2: Route,
   destination: number[],
 ) => {
-  const firstCommonCoord = calculateFirstCommonCoord(geometry1, geometry2);
+  const firstCommonCoord = calculateFirstCommonCoord(
+    route1.geometry,
+    route2.geometry,
+  );
 
   if (!firstCommonCoord) {
-    return 0;
+    return {
+      overlap: 0,
+    };
   }
   const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${firstCommonCoord[0]},${firstCommonCoord[1]};${destination[0]},${destination[1]}?overview=false&access_token=${MAPBOX_API_KEY}`;
   const query = await fetch(url, {
@@ -43,7 +48,11 @@ const calculateOverlap = async (
   });
   const result = await query.json();
 
-  return result.routes[0].distance;
+  return {
+    overlap: result.routes[0].distance,
+    distance1: route1.distance - result.routes[0].distance,
+    distance2: route2.distance - result.routes[0].distance,
+  };
 };
 
 const calculateOverlapMatrix = async (
@@ -56,14 +65,24 @@ const calculateOverlapMatrix = async (
     for (const route2 of routes) {
       if (route1.id !== route2.id) {
         const overlap = await calculateOverlap(
-          route1.geometry,
-          route2.geometry,
+          route1,
+          route2,
           destination.coordinates,
         );
-        // if the overlap is more than 20km -> can make this a parameter
-        if (overlap > 20000) {
+
+        /**
+         * Two conditions:
+         * 1. The overlap is more than 20km
+         * 2. If the person has no car, they shouldn't travel farther than 10km
+         */
+        if (
+          overlap.overlap > 15000 &&
+          (route1.carSeats ||
+            (!route1.carSeats && overlap.distance1! < 10000)) &&
+          (route2.carSeats || (!route2.carSeats && overlap.distance2! < 10000))
+        ) {
           overlaps[route1.carpoolId] = overlaps[route1.carpoolId] || {};
-          overlaps[route1.carpoolId][route2.carpoolId] = overlap;
+          overlaps[route1.carpoolId][route2.carpoolId] = overlap.overlap; // instead of just keeping track of the overlap value, we can add more information here, e.g. the distance to the meeting point for both routes
         }
       }
     }
@@ -102,7 +121,16 @@ const calculateGroups = (overlaps: Overlaps, routes: Route[]) => {
   while (overlaps && Object.keys(overlaps).length > 0) {
     const maxOverlap = calculateMaxOverlap(overlaps);
 
-    if (maxOverlap.value < 20000) break;
+    // this should never occur, but just in cas
+    if (maxOverlap.value < 15000) break;
+
+    /*** Variables ***/
+    const person1 = routes.find(
+      (route) => route.carpoolId === maxOverlap.carpoolId1,
+    );
+    const person2 = routes.find(
+      (route) => route.carpoolId === maxOverlap.carpoolId2,
+    );
 
     const existingGroup = groups.find(
       (group) =>
@@ -181,12 +209,6 @@ const calculateGroups = (overlaps: Overlaps, routes: Route[]) => {
       }
     } else {
       // determine who is the driver & start a new group
-      const person1 = routes.find(
-        (route) => route.carpoolId === maxOverlap.carpoolId1,
-      );
-      const person2 = routes.find(
-        (route) => route.carpoolId === maxOverlap.carpoolId2,
-      );
 
       const potentialDrivers = [person1, person2].filter(
         (person) => person?.carSeats,
@@ -255,6 +277,8 @@ export default defineEventHandler(async (event) => {
   const overlaps = await calculateOverlapMatrix(routes, destination);
 
   const groups = calculateGroups(overlaps, routes);
+
+  console.log(groups, "groups");
 
   return groups; // carpool location ids
 });

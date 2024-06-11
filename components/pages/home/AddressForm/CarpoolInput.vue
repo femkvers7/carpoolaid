@@ -59,7 +59,6 @@ const handleUpdate = async () => {
   const newLocation = carpoolLocations.value.find(
     (location) => location.id === isEditing.value,
   );
-  console.log(isEditing.value, newLocation, formValues.value, routes.value);
 
   // update route
   routes.value = routes.value.filter(

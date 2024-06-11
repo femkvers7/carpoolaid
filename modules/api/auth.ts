@@ -8,8 +8,6 @@ export const registerUser = async (email: string, password: string) => {
       emailRedirectTo: "/auth/confirmed-email",
     },
   });
-
-  console.log("registered data-error", data, error);
 };
 
 export const loginUser = async (email: string, password: string) => {
@@ -20,8 +18,6 @@ export const loginUser = async (email: string, password: string) => {
     password,
   });
 
-  console.log("loggedIn data-error", data, error);
-
   return { data, error };
 };
 
@@ -29,8 +25,6 @@ export const logoutUser = async () => {
   const supabase = useSupabaseClient();
 
   const { error } = await supabase.auth.signOut();
-
-  console.log("loggedOut error", error);
 
   navigateTo("/");
 };

@@ -14,12 +14,11 @@ const homeMapStore = useHomeMapStore();
 
 const handleLocationHover = () => {
   isHovering.value = true;
-  console.log(props.coordinates);
   homeMapStore.setPopup(
     props.coordinates as LngLatLike,
     `
       <h2>${props.place}</h2>
-      <p>${props.name ?? ""}</p>
+      <p>${props.name ?? ""} ${props.name ? " - " : ""} ${props.carSeats ? `${props.carSeats}` : ""}</p>
     `,
   );
 };

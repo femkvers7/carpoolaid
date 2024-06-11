@@ -11,7 +11,6 @@ const { carpoolLocations } = storeToRefs(homeMapStore);
 
 const getPersonFromId = (id: string) => {
   const person = carpoolLocations.value.find((location) => location.id === id);
-  console.log(person, "person");
   return person;
 };
 
@@ -62,7 +61,7 @@ const showWarning = computed(() => {
         <LocationLabel
           :name="getPersonFromId(person)?.name"
           :place="getPersonFromId(person)?.place"
-          :car-seats="group.capacity"
+          :car-seats="getPersonFromId(person)?.carSeats"
           :coordinates="getPersonFromId(person)?.coordinates"
         />
       </li>

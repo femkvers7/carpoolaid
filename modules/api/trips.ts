@@ -9,8 +9,6 @@ export const getTripsByUserId = async (userId: string) => {
     .eq("user_id", userId)
     .eq("locations.type", "destination");
 
-  console.log("getTrips", data, error);
-
   return { data, error };
 };
 
@@ -22,8 +20,6 @@ export const getTripById = async (tripId: string) => {
     .select("*, locations(*), groups(*)")
     .eq("id", tripId)
     .single();
-
-  console.log("getTripExtended", data, error);
 
   return { data, error };
 };
@@ -45,7 +41,6 @@ export const createTrip = async ({
     })
     .select();
 
-  console.log("createTrip", data, error);
   return { data, error };
 };
 
@@ -57,6 +52,5 @@ export const deleteTrip = async (tripId: string) => {
     .delete()
     .eq("id", tripId);
 
-  console.log("deleteTrip", data, error);
   return { data, error };
 };

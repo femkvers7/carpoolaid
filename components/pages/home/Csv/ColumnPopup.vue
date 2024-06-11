@@ -72,6 +72,7 @@ const handleClickNext = () => {
             </option>
           </select>
         </div>
+        <!-- not yet implemented
         <div>
           <label>
             <input
@@ -115,6 +116,7 @@ const handleClickNext = () => {
             </select>
           </div>
         </div>
+        -->
         <div>
           <label>
             <input

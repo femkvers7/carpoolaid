@@ -10,6 +10,7 @@ const { suggestions } = storeToRefs(homeSuggestionsStore);
 
 const generateCarpoolPlan = async () => {
   isLoading.value = true;
+  homeSuggestionsStore.reset();
   // generate carpool plan
   const carpoolPlan = await $fetch("/api/suggestions", {
     method: "POST",

@@ -19,7 +19,7 @@
   top: 0rem;
   left: 0rem;
 
-  background-color: #ffffff6d;
+  background-color: #80808050;
 }
 
 .loader {
@@ -42,11 +42,11 @@
   33% {
     background: #fff;
     box-shadow:
-      -24px 0 var(--green),
+      -24px 0 var(--red),
       24px 0 #fff;
   }
   66% {
-    background: var(--green);
+    background: var(--red);
     box-shadow:
       -24px 0 #fff,
       24px 0 #fff;
@@ -55,7 +55,7 @@
     background: #fff;
     box-shadow:
       -24px 0 #fff,
-      24px 0 var(--green);
+      24px 0 var(--red);
   }
 }
 </style>
