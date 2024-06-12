@@ -60,9 +60,10 @@ const onSubmit = handleSubmit(async (values) => {
         {{ errorMessage }}
       </p>
       <div class="flex justify-between items-end">
+        <!--
         <Button variant="tertiary" class="text-sm forgot-password" disabled>
           Forgot password?
-        </Button>
+        </Button>-->
         <Button variant="primary" type="submit" class="ml-auto capitalize">
           Login
         </Button>
