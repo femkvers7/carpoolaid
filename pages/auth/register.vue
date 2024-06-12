@@ -33,10 +33,13 @@ const [password] = defineField("password");
 const [confirmPassword] = defineField("confirmPassword");
 
 const onSubmit = handleSubmit(async (values) => {
-  isLoading.value = true;
-  registerUser(values.email, values.password);
-  navigateTo("/auth/confirm-email");
-  isLoading.value = false;
+  const { data, error } = await registerUser(values.email, values.password);
+  if (error) {
+    errorMessage.value = error.message;
+    return;
+  } else {
+    navigateTo("/auth/confirm-email");
+  }
 });
 </script>
 

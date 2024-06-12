@@ -8,6 +8,8 @@ export const registerUser = async (email: string, password: string) => {
       emailRedirectTo: "/auth/confirmed-email",
     },
   });
+
+  return { data, error };
 };
 
 export const loginUser = async (email: string, password: string) => {
