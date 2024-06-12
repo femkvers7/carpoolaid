@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const indexStore = useIndexStore();
-const { isLoading } = storeToRefs(indexStore);
+const { subtleLoading } = storeToRefs(indexStore);
 
 const homeMapStore = useHomeMapStore();
 const { destinationLocation, routes } = storeToRefs(homeMapStore);
@@ -9,7 +9,7 @@ const homeSuggestionsStore = useHomeSuggestionsStore();
 const { suggestions } = storeToRefs(homeSuggestionsStore);
 
 const generateCarpoolPlan = async () => {
-  isLoading.value = true;
+  subtleLoading.value = true;
   homeSuggestionsStore.reset();
   // generate carpool plan
   const carpoolPlan = await $fetch("/api/suggestions", {
@@ -24,7 +24,7 @@ const generateCarpoolPlan = async () => {
   });
 
   suggestions.value = carpoolPlan;
-  isLoading.value = false;
+  subtleLoading.value = false;
 };
 </script>
 

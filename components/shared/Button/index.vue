@@ -23,7 +23,7 @@ const props = withDefaults(
   </button>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .button {
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
@@ -32,16 +32,34 @@ const props = withDefaults(
 .button--accent {
   color: var(--beige);
   background-color: var(--purple);
+  &:hover {
+    background-color: #6b5067;
+  }
+  &:active {
+    background-color: #947790;
+  }
 }
 
 .button--primary {
   color: var(--purple);
   background-color: var(--lavender);
+  &:hover {
+    background-color: #bda6d1;
+  }
+  &:active {
+    background-color: #b99cd0;
+  }
 }
 
 .button--secondary {
   color: var(--purple);
   background-color: var(--beige);
+  &:hover {
+    background-color: #f3e1d3;
+  }
+  &:active {
+    background-color: #fae1ce;
+  }
 }
 
 .button--tertiary {
@@ -49,6 +67,12 @@ const props = withDefaults(
   color: var(--red);
   text-decoration: underline;
   padding: 0;
+  &:hover {
+    color: #b63319;
+  }
+  &:active {
+    color: #902c18;
+  }
 }
 
 .button--neutral {

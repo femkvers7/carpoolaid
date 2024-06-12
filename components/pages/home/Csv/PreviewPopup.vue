@@ -21,6 +21,14 @@ const postcodeWarning = computed(() => {
   );
 });
 
+const countryWarning = computed(() => {
+  // checks if country column is present and if there are any empty values
+  return (
+    !previewColumns.value.country ||
+    rows.value.some((entry) => !entry.Country || entry.Country.trim() === "")
+  );
+});
+
 const rowsLeft = computed(() => {
   if (rows.value.length > 5) {
     return rows.value.length - 5;
@@ -39,7 +47,7 @@ const handleClickNext = async () => {
         postcode: row["Postcode"],
         street: row["Street"],
         address_number: row["Address_number"],
-        country: row["Country"],
+        country: row["Country"] ?? "Belgium",
         limit: 1,
       };
     });
@@ -147,7 +155,11 @@ const handleClickBack = () => {
       <div v-if="rowsLeft" class="more-rows">{{ rowsLeft }} more rows ...</div>
       <div v-if="postcodeWarning" class="warning mt-4">
         We notice that some rows are lacking a postcode <br />
-        It is strongly recommended to provide a postal code to avoid ambiguity.
+        It is strongly recommended to provide a postal code to improve accuracy.
+      </div>
+      <div v-if="countryWarning" class="warning mt-4">
+        We notice that some rows are lacking a country <br />
+        The default country will be set to Belgium.
       </div>
       <div class="flex flex-row justify-between my-3">
         <Button @click="handleClickBack">Back</Button>

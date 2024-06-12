@@ -129,6 +129,7 @@ export const useHomeMapStore = defineStore("homeMap", () => {
       const route = await getRoute(location, destinationLocation.value!);
       routes.value.push(route);
     }
+    updateMapData(["routes"]);
   };
 
   // these can (normally) be used to snap map to fit all markers

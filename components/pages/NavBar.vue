@@ -95,8 +95,10 @@ const handleLogout = () => {
       height="auto"
     >
       <ul>
+        <!--
         <li><NuxtLink to="/profile">Profile</NuxtLink></li>
         <li>Settings</li>
+        -->
         <li @click="handleLogout">Logout</li>
       </ul>
     </Popup>
@@ -136,6 +138,9 @@ nav {
       border-radius: 50%;
       width: 2.5rem;
       height: 2.5rem;
+      &:hover {
+        background-color: #f3e1d3;
+      }
     }
   }
 }
@@ -157,6 +162,9 @@ nav {
       padding: 0.75rem 1rem;
       cursor: pointer;
       text-align: center;
+      &:hover {
+        color: var(--green);
+      }
     }
   }
 }

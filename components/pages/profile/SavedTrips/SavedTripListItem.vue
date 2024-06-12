@@ -11,7 +11,7 @@ const emit = defineEmits(["refresh"]);
 const router = useRouter();
 
 const indexStore = useIndexStore();
-const { isLoading } = storeToRefs(indexStore);
+const { isLoading, subtleLoading } = storeToRefs(indexStore);
 
 const suggestionsStore = useHomeSuggestionsStore();
 const { suggestions } = storeToRefs(suggestionsStore);
@@ -30,20 +30,6 @@ const setTripData = (
   },
 ) => {
   // set location data & routes
-  carpoolLocations.value = data!.locations
-    .filter((loc) => loc.type === "carpool")
-    .map((loc) => {
-      return {
-        id: loc.id,
-        coordinates: [loc.long, loc.lat],
-        name: loc?.name ?? undefined,
-        place: loc?.place ?? undefined,
-        carSeats: loc?.car_seats ?? undefined,
-        groupId: loc.group_id ?? undefined,
-        fullAddress: loc?.full_address ?? undefined,
-      };
-    });
-
   destinationLocation.value = data!.locations
     .filter((loc) => loc.type === "destination")
     .map((loc) => {
@@ -57,8 +43,19 @@ const setTripData = (
         fullAddress: loc?.full_address ?? undefined,
       };
     })[0];
-
-  homeMapStore.updateRoutes();
+  carpoolLocations.value = data!.locations
+    .filter((loc) => loc.type === "carpool")
+    .map((loc) => {
+      return {
+        id: loc.id,
+        coordinates: [loc.long, loc.lat],
+        name: loc?.name ?? undefined,
+        place: loc?.place ?? undefined,
+        carSeats: loc?.car_seats ?? undefined,
+        groupId: loc.group_id ?? undefined,
+        fullAddress: loc?.full_address ?? undefined,
+      };
+    });
 
   // set suggestions
   suggestions.value = data!.groups.map((group) => {
@@ -92,10 +89,9 @@ const handleOpenTrip = async () => {
     suggestionsStore.reset();
 
     // fetch detailed trip data
-    const { data, error } = await getTripById(props.trip.id);
-
+    const { data } = await getTripById(props.trip.id);
     setTripData(data!);
-
+    homeMapStore.updateRoutes();
     router.push("/");
   } catch (err) {
     throw showError({

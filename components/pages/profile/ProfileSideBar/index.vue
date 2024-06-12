@@ -13,6 +13,7 @@ const { activeTab } = storeToRefs(profileStore);
   <Popup class="wrapper">
     <ul>
       <div>
+        <!--
         <li>
           <NuxtLink
             to="/profile"
@@ -24,6 +25,7 @@ const { activeTab } = storeToRefs(profileStore);
             Profile
           </NuxtLink>
         </li>
+        -->
         <li>
           <NuxtLink
             to="/profile/saved-trips"
@@ -40,6 +42,7 @@ const { activeTab } = storeToRefs(profileStore);
             Saved trips
           </NuxtLink>
         </li>
+        <!--
         <li>
           <NuxtLink
             to="/profile/settings"
@@ -51,6 +54,7 @@ const { activeTab } = storeToRefs(profileStore);
             Settings
           </NuxtLink>
         </li>
+        -->
       </div>
       <li>
         <Button variant="neutral" class="logout" @click="handleLogout">
@@ -91,6 +95,9 @@ const { activeTab } = storeToRefs(profileStore);
         right: 0;
         background-color: var(--green);
         border-radius: 12px;
+      }
+      &:hover {
+        font-weight: bold;
       }
     }
     li:not(:last-child) {
