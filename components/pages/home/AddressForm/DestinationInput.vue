@@ -63,7 +63,7 @@ const handleDestinationLeave = () => {
       @mouseover="handleDestinationHover"
       @mouseleave="handleDestinationLeave"
     >
-      <p>{{ destinationLocation.name ?? destinationLocation.place }}</p>
+      <p>{{ destinationLocation.place }}</p>
       <button class="flex items-center" @click.prevent="toggleEditDestination">
         <Icon fill="var(--purple)" size="16px" name="pencil-square" />
       </button>

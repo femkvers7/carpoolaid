@@ -7,6 +7,7 @@ definePageMeta({
   title: "Register",
   description: "Register to CarpoolAid",
   layout: "auth",
+  middleware: "exclude-if-logged-in",
 });
 
 const indexStore = useIndexStore();

@@ -6,6 +6,7 @@ export const getTripsByUserId = async (userId: string) => {
   const { data, error } = await supabase
     .from("trips")
     .select("*, locations(*)")
+    .order("created_at", { ascending: false })
     .eq("user_id", userId)
     .eq("locations.type", "destination");
 

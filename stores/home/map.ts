@@ -185,7 +185,9 @@ export const useHomeMapStore = defineStore("homeMap", () => {
     destinationLocation.value = null;
     carpoolLocations.value = [];
     routes.value = [];
-    updateMapData(["markers", "routes"]);
+    if (mapInstance.value) {
+      updateMapData(["markers", "routes"]);
+    }
   };
 
   return {

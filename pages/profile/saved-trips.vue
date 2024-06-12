@@ -8,6 +8,9 @@ definePageMeta({
   layout: "profile",
 });
 
+const indexStore = useIndexStore();
+const { isLoading } = storeToRefs(indexStore);
+
 const profileStore = useProfileStore();
 const { activeTab } = storeToRefs(profileStore);
 
@@ -18,11 +21,10 @@ const { data, error } = await getTripsByUserId(user.value!.id);
 
 const savedTrips = ref(data);
 
-const handleRefresh = () => {
-  getTripsByUserId(user.value!.id).then((res) => {
-    const trips = res.data;
-    savedTrips.value = trips?.reverse() ?? [];
-  });
+const handleRefresh = (tripId: string) => {
+  savedTrips.value =
+    savedTrips.value?.filter((trip) => trip.id !== tripId) ?? [];
+  isLoading.value = false;
 };
 </script>
 

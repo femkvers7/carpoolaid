@@ -16,7 +16,7 @@ const authUrl = computed(() => {
         class="gap-2 button-home"
         @click="$router.push('/')"
       >
-        <Icon fill="var(--purple)" size="16px" name="arrow-left" />
+        <Icon fill="var(--red)" size="16px" name="arrow-left" />
         Go back to homepage
       </Button>
     </div>
@@ -38,7 +38,7 @@ const authUrl = computed(() => {
             ? "No account? Register"
             : "Already have an account? Login"
         }}
-        <Icon fill="var(--red)" size="16px" name="arrow-right" />
+        <Icon fill="var(--purple)" size="16px" name="arrow-right" />
       </Button>
     </div>
   </VFragment>

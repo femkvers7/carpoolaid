@@ -6,10 +6,6 @@ defineProps<{
 }>();
 
 const emit = defineEmits(["refresh"]);
-
-const handleRefresh = () => {
-  emit("refresh", true);
-};
 </script>
 
 <template>
@@ -18,7 +14,7 @@ const handleRefresh = () => {
       v-for="trip in savedTrips"
       :key="trip.id"
       :trip="trip"
-      @refresh="handleRefresh"
+      @refresh="$emit('refresh', trip.id)"
     />
   </ul>
   <p v-else>No saved trips</p>

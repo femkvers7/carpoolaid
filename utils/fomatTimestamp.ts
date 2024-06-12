@@ -13,5 +13,5 @@ export function formatTimestamp(timestamp: string | number | Date): string {
   const minutes = pad(date.getMinutes());
 
   // Format the date as "YYYY-MM-DD HH:MM:SS"
-  return `${year}-${month}-${day} ${hours}:${minutes}`;
+  return `${day}-${month}-${year} ${hours}:${minutes}`;
 }

@@ -1,8 +1,7 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-  const isLoggedIn = useCookie("sb-access-token");
+  const user = useSupabaseUser();
 
-  if (isLoggedIn.value) {
-    console.log("redirecting to /");
-    navigateTo("/");
+  if (user.value) {
+    return navigateTo("/");
   }
 });

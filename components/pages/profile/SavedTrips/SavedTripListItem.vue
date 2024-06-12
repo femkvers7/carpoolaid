@@ -21,65 +21,48 @@ const { destinationLocation, carpoolLocations } = storeToRefs(homeMapStore);
 
 const csvStore = useHomeCsvStore();
 
-/** Delete popup */
 const deleteIsOpen = ref(false);
 
-const handleDeleteClose = (refreshTrips: boolean) => {
-  deleteIsOpen.value = false;
-  if (refreshTrips) {
-    emit("refresh", refreshTrips);
-  }
-};
-
-/** Open a saved trip from profile  */
-const handleOpenTrip = async () => {
-  isLoading.value = true;
-
-  // reset all data
-  homeMapStore.reset();
-  csvStore.reset();
-  suggestionsStore.reset();
-
-  // fetch detailed trip data
-  const { data, error } = await getTripById(props.trip.id);
-
-  if (error || !data) {
-    console.log(error, "error");
-    throw createError("Failed to fetch trip data");
-  }
-
+const setTripData = (
+  data: Tables<"trips"> & {
+    locations: Tables<"locations">[];
+    groups: Tables<"groups">[];
+  },
+) => {
   // set location data & routes
-  carpoolLocations.value = data.locations
+  carpoolLocations.value = data!.locations
     .filter((loc) => loc.type === "carpool")
     .map((loc) => {
       return {
         id: loc.id,
         coordinates: [loc.long, loc.lat],
-        name: loc?.name ?? "",
+        name: loc?.name ?? undefined,
+        place: loc?.place ?? undefined,
         carSeats: loc?.car_seats ?? undefined,
         groupId: loc.group_id ?? undefined,
-        fullAddress: loc?.full_address ?? "",
+        fullAddress: loc?.full_address ?? undefined,
       };
     });
 
-  destinationLocation.value = data.locations
+  destinationLocation.value = data!.locations
     .filter((loc) => loc.type === "destination")
     .map((loc) => {
       return {
         id: loc.id,
         coordinates: [loc.long, loc.lat],
-        name: loc?.name ?? "",
+        name: loc?.name ?? undefined,
+        place: loc?.place ?? undefined,
         carSeats: loc?.car_seats ?? undefined,
         groupId: loc.group_id ?? undefined,
-        fullAddress: loc?.full_address ?? "",
+        fullAddress: loc?.full_address ?? undefined,
       };
     })[0];
 
   homeMapStore.updateRoutes();
 
   // set suggestions
-  suggestions.value = data.groups.map((group) => {
-    const driver = data.locations.find(
+  suggestions.value = data!.groups.map((group) => {
+    const driver = data!.locations.find(
       (loc) => loc.group_id === group.id && loc.group_role === "driver",
     );
 
@@ -96,9 +79,32 @@ const handleOpenTrip = async () => {
       passengers: passengers,
     };
   });
+};
 
-  router.push("/");
-  isLoading.value = false;
+/** Open a saved trip from profile  */
+const handleOpenTrip = async () => {
+  try {
+    isLoading.value = true;
+
+    // reset all data
+    homeMapStore.reset();
+    csvStore.reset();
+    suggestionsStore.reset();
+
+    // fetch detailed trip data
+    const { data, error } = await getTripById(props.trip.id);
+
+    setTripData(data!);
+
+    router.push("/");
+  } catch (err) {
+    throw showError({
+      statusCode: 500,
+      statusMessage: "Failed to open trip",
+    });
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 
@@ -122,7 +128,8 @@ const handleOpenTrip = async () => {
     <ConfirmDeletePopup
       v-if="deleteIsOpen"
       :trip-id="trip.id"
-      @close="handleDeleteClose"
+      @close="deleteIsOpen = false"
+      @refresh="$emit('refresh')"
     />
   </VFragment>
 </template>

@@ -5,16 +5,22 @@ const props = defineProps<{
   tripId: string;
 }>();
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits(["close", "refresh"]);
 
 const indexStore = useIndexStore();
 const { isLoading } = storeToRefs(indexStore);
 
 const handleDelete = async () => {
-  emit("close", true);
   isLoading.value = true;
-  await deleteTrip(props.tripId);
-  isLoading.value = false;
+  try {
+    emit("close");
+    emit("refresh");
+    await deleteTrip(props.tripId);
+  } catch (error) {
+    window.alert("An error occurred. Please try again.");
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 

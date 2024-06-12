@@ -103,8 +103,6 @@ onMounted(() => {
   map.on("mouseenter", ["carpools", "destination"], (e: mapboxgl.EventData) => {
     map.getCanvas().style.cursor = "pointer";
 
-    console.log(e, "hover event");
-
     const coordinates = e.features[0].geometry.coordinates.slice();
     const title = e.features[0].properties.title;
     const description = e.features[0].properties.description;

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {
-  createLocation,
   createLocations,
   updateLocation,
   getLocationsById,
@@ -9,6 +8,9 @@ import { createTrip, deleteTrip } from "~/modules/api/trips";
 import { createGroup } from "~/modules/api/groups";
 
 const emit = defineEmits(["close"]);
+
+const indexStore = useIndexStore();
+const { isLoading } = storeToRefs(indexStore);
 
 const homeMapStore = useHomeMapStore();
 const { destinationLocation, carpoolLocations } = storeToRefs(homeMapStore);
@@ -24,89 +26,57 @@ if (!suggestions.value.length) {
 }
 
 // check if trip locations are already assigned to a trip
-const { data: overlapData, error } = await getLocationsById([
+const { data: overwriteData, error } = await getLocationsById([
   destinationLocation.value!.id,
   ...carpoolLocations.value.map((loc) => loc.id),
 ]);
 
-if (overlapData && overlapData.length > 0) {
+if (overwriteData && overwriteData.length > 0) {
   warnings.value.unshift(
     `A trip with these locations already exists. <br/> Saving will overwrite the existing trip.`,
   );
 }
 
-const handleSave = async () => {
-  if (!destinationLocation.value || !carpoolLocations.value.length) {
-    throw createError({
-      message: "Must select a destination and at least one carpool location",
-    });
-  }
-
+const saveTrip = async () => {
   const user = useSupabaseUser();
-
-  if (overlapData && overlapData.length > 0) {
-    // delete existing trip
-    await deleteTrip(overlapData[0].trip_id);
-  }
 
   const { data: tripData, error: tripError } = await createTrip({
     userId: user.value!.id,
     name: tripName.value ?? "My trip",
   });
 
-  if (tripError) {
-    throw createError({
-      ...tripError,
-      message: "Error saving trip, please try again",
-    });
-  }
-
   const tripId = tripData![0].id;
 
-  // save destination to trip
-  const { data: destData, error: destError } = await createLocation({
-    id: destinationLocation.value.id,
-    lat: destinationLocation.value.coordinates[1],
-    long: destinationLocation.value.coordinates[0],
-    place: destinationLocation.value.place ?? null,
-    type: "destination",
-    full_address: destinationLocation.value.fullAddress ?? null,
-    trip_id: tripId,
-  });
+  // save locations to trip
+  const locations = [
+    {
+      id: destinationLocation.value!.id,
+      lat: destinationLocation.value!.coordinates[1],
+      long: destinationLocation.value!.coordinates[0],
+      place: destinationLocation.value!.place ?? null,
+      type: "destination",
+      full_address: destinationLocation.value!.fullAddress ?? null,
+      trip_id: tripId,
+    },
+    ...carpoolLocations.value.map((location) => ({
+      id: location.id,
+      lat: location.coordinates[1],
+      long: location.coordinates[0],
+      name: location.name ?? null,
+      place: location.place ?? null,
+      car_seats: location.carSeats,
+      type: "carpool",
+      full_address: location.fullAddress ?? null,
+      trip_id: tripId,
+    })),
+  ];
 
-  if (destError) {
-    throw createError({
-      ...destError,
-      message: "Error saving destination, please try again",
-    });
-  }
-
-  // save carpool locations to trip
-  const locations = carpoolLocations.value.map((location) => ({
-    id: location.id,
-    lat: location.coordinates[1],
-    long: location.coordinates[0],
-    name: location.name ?? null,
-    place: location.place ?? null,
-    car_seats: location.carSeats,
-    type: "carpool",
-    full_address: location.fullAddress ?? null,
-    trip_id: tripId,
-  }));
-
-  const { data: carpData, error: carpError } = await createLocations(locations);
-
-  if (carpError) {
-    throw createError({
-      ...carpError,
-      message: "Error saving carpool locations, please try again",
-    });
-  }
+  await createLocations(locations);
 
   if (suggestions.value.length > 0) {
     // make groups
     for (const group of suggestions.value) {
-      const { data: groupData, error: groupError } = await createGroup({
+      const { data: groupData } = await createGroup({
         trip_id: tripId,
         id: group.id,
       });
@@ -125,8 +95,32 @@ const handleSave = async () => {
       }
     }
   }
+};
 
-  emit("close");
+const handleSave = async () => {
+  try {
+    emit("close");
+    isLoading.value = true;
+
+    if (!destinationLocation.value || !carpoolLocations.value.length) {
+      isLoading.value = false;
+      window.alert(
+        "Must select a destination and at least one carpool location",
+      );
+    }
+
+    if (overwriteData && overwriteData.length > 0) {
+      // delete existing trip
+      await deleteTrip(overwriteData[0].trip_id);
+    }
+    await saveTrip();
+    navigateTo("/profile/saved-trips");
+  } catch (error) {
+    console.error(error);
+    window.alert("Error saving trip, please try again");
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 <template>
@@ -142,6 +136,7 @@ const handleSave = async () => {
       <h3>Save your trip</h3>
       <form method="post">
         <Input
+          v-model="tripName"
           label="Trip name"
           name="tripName"
           type="text"

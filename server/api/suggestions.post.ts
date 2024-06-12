@@ -273,7 +273,5 @@ export default defineEventHandler(async (event) => {
 
   const groups = calculateGroups(overlaps, routes);
 
-  console.log(groups, "groups");
-
   return groups; // carpool location ids
 });
