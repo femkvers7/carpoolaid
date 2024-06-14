@@ -121,8 +121,8 @@ const calculateGroups = (overlaps: Overlaps, routes: Route[]) => {
   while (overlaps && Object.keys(overlaps).length > 0) {
     const maxOverlap = calculateMaxOverlap(overlaps);
 
-    // this should never occur, but just in cas
-    if (maxOverlap.value < 15000) break;
+    // this should never occur, but just in case
+    if (maxOverlap.value < 15000) continue;
 
     /*** Variables ***/
     const route1 = routes.find(
@@ -131,13 +131,13 @@ const calculateGroups = (overlaps: Overlaps, routes: Route[]) => {
     const route2 = routes.find(
       (route) => route.carpoolId === maxOverlap.carpoolId2,
     );
-
     const existingGroup = groups.find(
       (group) =>
         group.driver === maxOverlap.carpoolId2 ||
         group.passengers.includes(maxOverlap.carpoolId2),
     );
 
+    /*** Start assignment ***/
     if (existingGroup) {
       if (existingGroup.passengers.length < existingGroup.capacity - 1) {
         existingGroup.passengers.push(maxOverlap.carpoolId1);
@@ -161,7 +161,7 @@ const calculateGroups = (overlaps: Overlaps, routes: Route[]) => {
             const passengerRoute = routes.find(
               (route) => route.carpoolId === passenger,
             );
-            return passengerRoute!.carSeats && passengerRoute!.carSeats > 0;
+            return passengerRoute?.carSeats && passengerRoute?.carSeats > 0;
           });
 
           const switchWith = routes.find(
@@ -170,8 +170,8 @@ const calculateGroups = (overlaps: Overlaps, routes: Route[]) => {
 
           if (!switchWith) {
             // if there is no one to switch with, we cannot provide a better solution
-            // the user will be part of the people 'driving alone'
-            // manual intervention is needed
+            // the user will be unassigned
+            // manual intervention by the app user is needed
             delete overlaps[maxOverlap.carpoolId1];
           } else {
             // remove the switcher from existing group
@@ -194,8 +194,7 @@ const calculateGroups = (overlaps: Overlaps, routes: Route[]) => {
         }
 
         // if car is full, delete it as an option from all overlaps
-        // only doing this now, allows the driver to be switched if needed
-        if (existingGroup.passengers.length === existingGroup.capacity - 1) {
+        if (existingGroup.passengers.length + 1 === existingGroup.capacity) {
           for (const carpool in overlaps) {
             delete overlaps[carpool][existingGroup.driver];
             for (const assignedRoute of existingGroup.passengers) {
@@ -210,11 +209,8 @@ const calculateGroups = (overlaps: Overlaps, routes: Route[]) => {
         (person) => person?.carSeats,
       );
 
-      // improvement possible!
-      // if the assigned driver does not have a car, we should switch them with another group, if possible
-      // --> need to trace back an alternative group they can belong to
-
       if (potentialDrivers.length === 0) {
+        // both will be unassigned , manual intervention by the app user is needed
         delete overlaps[maxOverlap.carpoolId1];
         delete overlaps[maxOverlap.carpoolId2];
       } else if (potentialDrivers.length === 1) {

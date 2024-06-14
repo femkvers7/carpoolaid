@@ -27,6 +27,10 @@ const props = withDefaults(
 .button {
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
+  &:disabled {
+    cursor: wait;
+    opacity: 0.5;
+  }
 }
 
 .button--accent {
@@ -70,7 +74,7 @@ const props = withDefaults(
   &:hover {
     color: #b63319;
   }
-  &:active {
+  &:active:not(:disabled) {
     color: #902c18;
   }
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Location } from "~/types/Location";
 const indexStore = useIndexStore();
-const { isLoading } = storeToRefs(indexStore);
+const { isLoading, subtleLoading } = storeToRefs(indexStore);
 
 const homeFormStore = useHomeFormStore();
 const { formValues, isEditing } = storeToRefs(homeFormStore);
@@ -11,12 +11,12 @@ const { carpoolLocations, destinationLocation, routes } =
   storeToRefs(homeMapStore);
 
 const onRetrieveCarpoolLocation = (location: Location) => {
-  isLoading.value = true;
+  subtleLoading.value = true;
   formValues.value = {
     ...formValues.value,
     ...location,
   };
-  isLoading.value = false;
+  subtleLoading.value = false;
 };
 
 const onSubmit = async () => {
@@ -24,7 +24,7 @@ const onSubmit = async () => {
     window.alert("Please enter an address");
     return;
   }
-  isLoading.value = true;
+  subtleLoading.value = true;
   carpoolLocations.value.push(formValues.value as Location);
 
   // computeRoute
@@ -38,18 +38,18 @@ const onSubmit = async () => {
 
   // set form back to reset
   homeFormStore.resetForm();
-  isLoading.value = false;
+  subtleLoading.value = false;
 };
 
 const cancelEdit = () => {
-  isLoading.value = true;
+  subtleLoading.value = true;
   isEditing.value = null;
   homeFormStore.resetForm();
-  isLoading.value = false;
+  subtleLoading.value = false;
 };
 
 const handleUpdate = async () => {
-  isLoading.value = true;
+  subtleLoading.value = true;
   carpoolLocations.value = carpoolLocations.value.map((location) =>
     location.id === isEditing.value
       ? { ...location, ...formValues.value, id: isEditing.value }
@@ -74,7 +74,7 @@ const handleUpdate = async () => {
   isEditing.value = null;
   homeFormStore.resetForm();
   homeMapStore.updateMapData(["markers", "routes"]);
-  isLoading.value = false;
+  subtleLoading.value = false;
 };
 </script>
 
@@ -119,6 +119,7 @@ const handleUpdate = async () => {
       v-if="!isEditing"
       variant="accent"
       class="ml-auto"
+      :disabled="subtleLoading"
       @click.prevent="onSubmit"
     >
       <Icon fill="var(--beige)" size="16px" name="plus"></Icon>

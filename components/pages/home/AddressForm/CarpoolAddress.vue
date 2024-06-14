@@ -14,7 +14,7 @@ defineEmits(["editLocation"]);
 const isHovering = ref(false);
 
 const indexStore = useIndexStore();
-const { isLoading } = storeToRefs(indexStore);
+const { isLoading, subtleLoading } = storeToRefs(indexStore);
 
 const homeMapStore = useHomeMapStore();
 
@@ -22,16 +22,16 @@ const homeFormStore = useHomeFormStore();
 const { formValues, isEditing } = storeToRefs(homeFormStore);
 
 const deleteLocation = () => {
-  isLoading.value = true;
+  subtleLoading.value = true;
 
   homeFormStore.deleteLocation(props.location.id);
   homeMapStore.updateMapData(["markers", "routes"]);
 
-  isLoading.value = false;
+  subtleLoading.value = false;
 };
 
 const toggleEditLocation = () => {
-  isLoading.value = true;
+  subtleLoading.value = true;
   isEditing.value = props.location.id;
   formValues.value = props.location;
 
@@ -39,7 +39,7 @@ const toggleEditLocation = () => {
     "location-input",
   ) as HTMLInputElement;
   mapInput.value = props.location.fullAddress ?? props.location.place ?? "";
-  isLoading.value = false;
+  subtleLoading.value = false;
 };
 
 const handleAddressHover = () => {

@@ -32,6 +32,7 @@ const generateCarpoolPlan = async () => {
   <Button
     variant="primary"
     class="mx-auto mt-auto mb-3"
+    :disabled="subtleLoading"
     @click="generateCarpoolPlan"
   >
     Generate Carpoolplan
