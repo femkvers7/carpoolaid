@@ -2,7 +2,7 @@
 import mapboxgl from "mapbox-gl";
 import { useHomeSuggestionsStore } from "~/stores/home/suggestions";
 
-const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
+const MAPBOX_API_KEY = useRuntimeConfig().public.MAPBOX_ACCESS_TOKEN;
 mapboxgl.accessToken = MAPBOX_API_KEY;
 
 const indexStore = useIndexStore();

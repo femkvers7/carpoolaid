@@ -13,7 +13,7 @@
 
 import { v4 as uuidv4 } from "uuid";
 
-const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
+const MAPBOX_API_KEY = useRuntimeConfig().public.MAPBOX_ACCESS_TOKEN;
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);

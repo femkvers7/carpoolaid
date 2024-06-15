@@ -18,7 +18,7 @@ useHead({
   ],
 });
 
-const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
+const MAPBOX_API_KEY = useRuntimeConfig().public.MAPBOX_ACCESS_TOKEN;
 
 defineProps<{
   id?: string;

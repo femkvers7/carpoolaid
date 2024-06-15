@@ -36,7 +36,7 @@ export const useHomeMapStore = defineStore("homeMap", () => {
     }
   };
 
-  const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
+  const MAPBOX_API_KEY = useRuntimeConfig().public.MAPBOX_ACCESS_TOKEN;
 
   const markersGeoJSON = computed((): GeoJSON.FeatureCollection => {
     if (!(carpoolLocations.value.length || destinationLocation.value))

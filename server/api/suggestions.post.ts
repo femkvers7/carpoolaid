@@ -12,7 +12,7 @@ import { Route } from "~/types/Route";
 import { SuggestionGroup } from "~/types/Suggestion";
 import { v4 as uuidv4 } from "uuid";
 
-const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
+const MAPBOX_API_KEY = useRuntimeConfig().public.MAPBOX_ACCESS_TOKEN;
 
 const calculateFirstCommonCoord = (
   geometry1: number[][],

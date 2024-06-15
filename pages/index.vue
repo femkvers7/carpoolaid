@@ -7,11 +7,28 @@ const homeSuggestionsStore = useHomeSuggestionsStore();
 const { suggestions, hideSuggestions } = storeToRefs(homeSuggestionsStore);
 
 const homeCsvStore = useHomeCsvStore();
-const { showColumnPopup, showPreviewPopup } = storeToRefs(homeCsvStore);
+const { showColumnPopup, showPreviewPopup, columnChecks, columnNames } =
+  storeToRefs(homeCsvStore);
 
 const closePopups = () => {
   showColumnPopup.value = false;
   showPreviewPopup.value = false;
+  columnChecks.value = {
+    name: false,
+    shift: false,
+    carAvailability: false,
+  };
+  columnNames.value = {
+    country: "Country",
+    city: "City",
+    postcode: "Postcode",
+    street: "Street",
+    address_number: "Address Number",
+    name: "",
+    startTime: "",
+    endTime: "",
+    carAvailability: "",
+  };
 };
 </script>
 

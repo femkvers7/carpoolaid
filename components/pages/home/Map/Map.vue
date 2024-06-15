@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import mapboxgl, { Map } from "mapbox-gl";
+import mapboxgl from "mapbox-gl";
 import mapPin from "assets/images/pin.png";
 
 useHead({
@@ -11,7 +11,7 @@ useHead({
   ],
 });
 
-const MAPBOX_API_KEY = useRuntimeConfig().public.mapboxAccessToken;
+const MAPBOX_API_KEY = useRuntimeConfig().public.MAPBOX_ACCESS_TOKEN;
 const homeMapStore = useHomeMapStore();
 
 mapboxgl.accessToken = MAPBOX_API_KEY;

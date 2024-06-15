@@ -1,8 +1,12 @@
 export default defineNuxtConfig({
+  app: {
+    head: {
+      title: "CarpoolAid",
+    },
+  },
   runtimeConfig: {
     public: {
-      mapboxAccessToken:
-        "pk.eyJ1IjoiZmVta2V2ZXJzd2V5dmVsZCIsImEiOiJjbHZmbjBmdDIwbW0zMmpwNTB1c2JhcGlnIn0.9KUcnPP8agtNIdnrFH8lNw",
+      MAPBOX_ACCESS_TOKEN: "",
     },
   },
   modules: ["@nuxtjs/tailwindcss", "@pinia/nuxt", "@nuxtjs/supabase"],
