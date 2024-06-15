@@ -28,7 +28,7 @@ const props = withDefaults(
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   &:disabled {
-    cursor: wait;
+    cursor: default;
     opacity: 0.5;
   }
 }
